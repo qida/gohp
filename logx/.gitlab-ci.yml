@@ -1,0 +1,24 @@
+image: golang:latest
+
+stages:
+  - lint
+  
+lintdo:
+  image: golangci/golangci-lint:v1.37
+  stage: lint
+  allow_failure: true
+  before_script:
+    - echo "before_script" 
+    - git version 
+    - go env -w GOPRIVATE=git.baijiashilian.com
+    - go version 
+    - go env -w GO111MODULE=on 
+    - go env -w GOPROXY="https://goproxy.cn,direct"
+    - echo "env set ok"
+    - echo $(pwd)
+  script:
+    - docker run --rm -v $(pwd):/app -w /app golangci/golangci-lint:v1.37.0 golangci-lint run --timeout 5m -v 
+  after_script: 
+    - echo "Lint End"
+  tags:
+    - go
