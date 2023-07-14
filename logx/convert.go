@@ -211,13 +211,13 @@ func toRocketMQ(data interface{}) ([]LogRocketMQ, error) {
 	return lrs, nil
 }
 
-func toMail(data interface{}) ([]LogMail, error) {
+func toMail(data interface{}) ([]Mail, error) {
 	arrI, err := cast.ToSliceE(data)
 	if err != nil {
 		return nil, errors.New("type error")
 	}
 
-	lms := make([]LogMail, 0)
+	lms := make([]Mail, 0)
 	for _, a := range arrI {
 		m, err := cast.ToStringMapE(a)
 		if err != nil {
@@ -248,7 +248,7 @@ func toMail(data interface{}) ([]LogMail, error) {
 			continue
 		}
 		password := cast.ToString(m["password"])
-		lms = append(lms, LogMail{
+		lms = append(lms, Mail{
 			Level:    &level,
 			From:     cast.ToString(from),
 			To:       cast.ToString(to),

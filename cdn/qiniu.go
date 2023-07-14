@@ -118,7 +118,7 @@ func (c *QiNiu) MoveFile(src_url string, dst_url string) (url_file string, err e
 	//如果目标文件存在，是否强制覆盖，如果不覆盖，默认返回614 file exists
 	err = bucketManager.Move(c.Bucket, src_url, c.Bucket, dst_url, true)
 	if err != nil {
-		log.Printf("移动文件 %+v", err1)
+		log.Printf("移动文件 %+v", err)
 		return
 	}
 	url_file = dst_url
@@ -144,7 +144,7 @@ func (c *QiNiu) Delete(url string) (err error) {
 	key := strings.TrimPrefix(url, c.Url)
 	err = bucketManager.Delete(c.Bucket, key)
 	if err != nil {
-		log.Printf("DeleteFile key:%s Err:%+v", key, err1)
+		log.Printf("DeleteFile key:%s Err:%+v", key, err)
 	} else {
 		fmt.Printf("成功删除：%s\r\n", key)
 	}

@@ -2,7 +2,6 @@ package logx
 
 import (
 	"gohp/rocketmq"
-	"gohp/utils"
 
 	"go.uber.org/zap/zapcore"
 )
