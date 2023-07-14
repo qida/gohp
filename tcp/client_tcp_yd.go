@@ -6,8 +6,6 @@ import (
 	"net"
 	"time"
 
-	"github.com/qida/gohp/logx"
-
 	"go.uber.org/zap"
 )
 
@@ -45,7 +43,6 @@ func (t *TCP) SendStart(stream_id string) (_err error) {
 	cmd := newTCPCMD(RequestType开始, stream_id)
 	t.streamId = stream_id
 	bytCmd, _ := json.Marshal(cmd)
-	logx.Debug("发指令", zap.Any("内容", string(bytCmd)))
 	_, _err = fmt.Fprint(t.Conn, string(bytCmd))
 	return
 }
@@ -61,7 +58,6 @@ func (t *TCP) SendStop() (_err error) {
 	}
 	cmd := newTCPCMD(RequestType停止, t.streamId)
 	bytCmd, _ := json.Marshal(cmd)
-	logx.Debug("发指令", zap.Any("内容", string(bytCmd)))
 	_, _err = fmt.Fprint(t.Conn, string(bytCmd))
 	return
 }
