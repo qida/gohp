@@ -23,3 +23,11 @@ func GetFuncName(i interface{}, seps ...rune) string {
 	}
 	return ""
 }
+
+// 获取当前函数名称
+func GetCurrFuncName() string {
+	// 获取当前函数的调用栈
+	pc, _, _, _ := runtime.Caller(1)
+	// 获取当前函数的名称
+	return runtime.FuncForPC(pc).Name()
+}

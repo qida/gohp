@@ -4,10 +4,11 @@ import (
 	"fmt"
 	"time"
 
+	"gohp/tcp"
+
 	"github.com/axgle/mahonia"
 	"github.com/beego/beego/v2/adapter/logs"
 	beego "github.com/beego/beego/v2/server/web"
-	"github.com/qida/gohp/tcp"
 )
 
 var (
