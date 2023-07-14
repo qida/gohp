@@ -1,4 +1,4 @@
-module github.com/qida/goph
+module github.com/qida/gohp
 
 go 1.19
 
