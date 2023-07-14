@@ -6,7 +6,7 @@ import (
 	"reflect"
 	"strings"
 
-	"gohp/logx"
+	"github.com/qida/gohp/logx"
 )
 
 //e.g. 	AutoGetThrift(db.BaseImage{},db.TbBaseLabel{},db.TbBaseLabelType{},db.TbBaseSchemeAi{},db.TbRecLabelImage{}}

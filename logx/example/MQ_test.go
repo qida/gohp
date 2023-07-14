@@ -5,7 +5,7 @@ import (
 	"io/ioutil"
 	"testing"
 
-	"gohp/logx"
+	"github.com/qida/gohp/logx"
 )
 
 func Test_mq(t *testing.T) {

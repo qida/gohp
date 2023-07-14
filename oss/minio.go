@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"time"
 
-	"gohp/logx"
+	"github.com/qida/gohp/logx"
 
 	"github.com/minio/minio-go/v7"
 	"github.com/minio/minio-go/v7/pkg/credentials"

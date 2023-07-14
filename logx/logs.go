@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"time"
 
-	"gohp/tcp"
+	"github.com/qida/gohp/tcp"
 
 	"github.com/axgle/mahonia"
 	"github.com/beego/beego/v2/adapter/logs"

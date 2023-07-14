@@ -5,7 +5,7 @@ import (
 	"errors"
 	"time"
 
-	"gohp/logx"
+	"github.com/qida/gohp/logx"
 
 	"github.com/aliyun/aliyun-oss-go-sdk/oss"
 	"go.uber.org/zap"

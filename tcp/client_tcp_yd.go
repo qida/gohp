@@ -6,7 +6,7 @@ import (
 	"net"
 	"time"
 
-	"gohp/logx"
+	"github.com/qida/gohp/logx"
 
 	"go.uber.org/zap"
 )

@@ -7,7 +7,7 @@ import (
 	"path/filepath"
 	"time"
 
-	"gohp/logx"
+	"github.com/qida/gohp/logx"
 
 	"github.com/secsy/goftp"
 )

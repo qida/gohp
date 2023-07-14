@@ -10,7 +10,7 @@ import (
 	"strings"
 	"time"
 
-	"gohp/rocketmq"
+	"github.com/qida/gohp/rocketmq"
 
 	"github.com/apache/rocketmq-client-go/v2/primitive"
 	"github.com/goccy/go-json"
