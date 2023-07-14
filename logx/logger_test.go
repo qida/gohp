@@ -1,14 +1,15 @@
 package logx
 
 import (
-	"github.com/bytedance/gopkg/util/logger"
-	"go.uber.org/zap"
-	"gopkg.in/yaml.v3"
 	"log"
 	"os"
 	"strings"
 	"testing"
 	"time"
+
+	"github.com/bytedance/gopkg/util/logger"
+	"go.uber.org/zap"
+	"gopkg.in/yaml.v3"
 )
 
 var config = `

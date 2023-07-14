@@ -5,8 +5,6 @@ import (
 	"fmt"
 	"net"
 	"time"
-
-	"go.uber.org/zap"
 )
 
 const (

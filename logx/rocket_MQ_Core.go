@@ -2,7 +2,7 @@ package logx
 
 import (
 	"github.com/qida/gohp/rocketmq"
-
+	"github.com/qida/gohp/slice"
 	"go.uber.org/zap/zapcore"
 )
 
@@ -60,7 +60,7 @@ func (c *rocketCore) Write(ent zapcore.Entry, fields []zapcore.Field) error {
 
 	//_, err = c.out.Write(buf.Bytes())
 
-	valTag, err := utils.SliceStructPop[zapcore.Field, string](fields, "Key", "tag")
+	valTag, err := slice.SliceStructPop[zapcore.Field, string](fields, "Key", "tag")
 	if err != nil {
 		return err
 	}

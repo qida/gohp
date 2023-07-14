@@ -115,6 +115,7 @@ func NewWithTLS(address, relay, certFile, keyFile string) *server {
 
 func (s *server) initRelay() {
 	var relayTcp net.Conn
+	defer relayTcp.Close()
 	var err error
 	for {
 		msg := <-s.RelayMessage
@@ -125,8 +126,6 @@ func (s *server) initRelay() {
 					relayTcp = nil
 					log.Println("Error starting TCP relay.", err)
 					continue
-				} else {
-					defer relayTcp.Close()
 				}
 			}
 			_, err = relayTcp.Write([]byte(msg))
