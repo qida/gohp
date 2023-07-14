@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"goph/logx"
+	"github.com/qida/gohp/logx"
 
 	"github.com/go-resty/resty/v2"
 )
