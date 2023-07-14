@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"github.com/qida/gohp/logx"
-
+	"github.com/qida/gohp/gox"
 	"github.com/minio/minio-go/v7"
 	"github.com/minio/minio-go/v7/pkg/credentials"
 	"go.uber.org/zap"
@@ -54,7 +54,7 @@ func (t *OssMinIO) UploadFile(time_out time.Duration, file_name, prop string, fi
 		info, err := t.Client.FPutObject(ctx, t.NameBucket, file_name, file, options)
 		if err != nil {
 			_err = err
-			logx.Error("UploadFile", zap.Any("func", GetCurrFuncName()), zap.Error(err))
+			logx.Error("UploadFile", zap.Any("func", gox.GetCurrFuncName()), zap.Error(err))
 			return
 		}
 		// _file_url = fmt.Sprintf("/%s/%s", info.Bucket, info.Key)
@@ -63,7 +63,7 @@ func (t *OssMinIO) UploadFile(time_out time.Duration, file_name, prop string, fi
 		info, err := t.Client.PutObject(ctx, t.NameBucket, file_name, bytes.NewReader(file), int64(len(file)), options)
 		if err != nil {
 			_err = err
-			logx.Error("UploadFile", zap.Any("func", GetCurrFuncName()), zap.Error(err))
+			logx.Error("UploadFile", zap.Any("func", gox.GetCurrFuncName()), zap.Error(err))
 			return
 		}
 		// _file_url = fmt.Sprintf("/%s/%s", info.Bucket, info.Key)
@@ -105,7 +105,7 @@ func (t *OssMinIO) DeleteFile(file_name string) (_err error) {
 func (t *OssMinIO) DeleteAllFiles() (_err error) {
 	defer func() {
 		if _err != nil {
-			logx.Error("DeleteAllFiles", zap.Any("func", GetCurrFuncName()), zap.Error(_err))
+			logx.Error("DeleteAllFiles", zap.Any("func", gox.GetCurrFuncName()), zap.Error(_err))
 		}
 	}()
 	if t == nil {

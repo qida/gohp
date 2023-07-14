@@ -6,7 +6,6 @@ import (
 	"time"
 
 	"github.com/qida/gohp/logx"
-
 	"github.com/aliyun/aliyun-oss-go-sdk/oss"
 	"go.uber.org/zap"
 )
@@ -95,7 +94,7 @@ func (t *OssAliyun) DeleteAllFiles() (_err error) {
 	}
 	defer func() {
 		if _err != nil {
-			logx.Error("DeleteAllFiles", zap.Any("func", GetCurrFuncName()), zap.Error(_err))
+			logx.Error("DeleteAllFiles", zap.Any("func", gox.GetCurrFuncName()), zap.Error(_err))
 		}
 	}()
 	logx.Info("限测试使用 删除所有图片")
