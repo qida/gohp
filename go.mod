@@ -34,7 +34,7 @@ require (
 	github.com/unknwon/com v1.0.1
 	github.com/xxtea/xxtea-go v0.0.0-20170828040851-35c4b17eecf6
 	github.com/yinheli/mahonia v0.0.0-20131226213531-0eef680515cc
-	go.uber.org/zap v1.17.0
+	go.uber.org/zap v1.24.0
 	golang.org/x/image v0.0.0-20211028202545-6944b10bf410
 	golang.org/x/net v0.10.0
 	golang.org/x/text v0.9.0
