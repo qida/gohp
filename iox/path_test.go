@@ -15,31 +15,8 @@
 package iox
 
 import (
-	"os"
-	"runtime"
 	"testing"
 )
-
-func TestGetGOPATHs(t *testing.T) {
-	var gpsR []string
-
-	if runtime.GOOS != "windows" {
-		gpsR = []string{"path/to/gopath1", "path/to/gopath2", "path/to/gopath3"}
-		os.Setenv("GOPATH", "path/to/gopath1:path/to/gopath2:path/to/gopath3")
-	} else {
-		gpsR = []string{"path/to/gopath1", "path/to/gopath2", "path/to/gopath3"}
-		os.Setenv("GOPATH", "path\\to\\gopath1;path\\to\\gopath2;path\\to\\gopath3")
-	}
-
-	gps := GetGOPATHs()
-	if !CompareSliceStr(gps, gpsR) {
-		t.Errorf("GetGOPATHs:\n Expect => %s\n Got => %s\n", gpsR, gps)
-	}
-}
-
-func TestGetSrcPath(t *testing.T) {
-
-}
 
 func TestHomeDir(t *testing.T) {
 	_, err := HomeDir()

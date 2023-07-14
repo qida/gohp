@@ -7,7 +7,7 @@ import (
 	"syscall"
 	"time"
 
-	"goph/logx"
+	"github.com/qida/gohp/logx"
 
 	kafka "github.com/segmentio/kafka-go"
 )

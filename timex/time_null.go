@@ -10,7 +10,7 @@ type TimeNull struct {
 	sql.NullTime
 }
 
-func UpdateNullTime(t time.Time) TimeNull {
+func UpdateTimeNull(t time.Time) TimeNull {
 	return TimeNull{NullTime: sql.NullTime{Valid: true, Time: t}}
 }
 
@@ -26,7 +26,7 @@ func (v TimeNull) Add(time_long time.Duration) TimeNull {
 	return v
 }
 
-func NullTimeNow() TimeNull {
+func TimeNullNow() TimeNull {
 	var v = TimeNull{
 		NullTime: sql.NullTime{
 			Time:  time.Now(),
@@ -57,7 +57,7 @@ func (v *TimeNull) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-func TimeStringToNullTime(str_time string, loc_zone *time.Location) TimeNull {
+func TimeStringToTimeNull(str_time string, loc_zone *time.Location) TimeNull {
 	if str_time == "" || str_time == "null" {
 		return TimeNull{NullTime: sql.NullTime{Valid: false, Time: time.Time{}}}
 	}
@@ -78,7 +78,7 @@ func TimeStringToTime(str_time string, loc_zone *time.Location) time.Time {
 	}
 	return t
 }
-func TimeToNullTime(t time.Time) TimeNull {
+func TimeToTimeNull(t time.Time) TimeNull {
 	if t.IsZero() {
 		return TimeNull{NullTime: sql.NullTime{Valid: false, Time: time.Time{}}}
 	}
