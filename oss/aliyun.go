@@ -5,7 +5,7 @@ import (
 	"errors"
 	"time"
 
-	"gobase/logger"
+	"gohp/logx"
 
 	"github.com/aliyun/aliyun-oss-go-sdk/oss"
 	"go.uber.org/zap"
@@ -24,12 +24,12 @@ type OssAliyun struct {
 func NewOssAliyun(expires int, end_point, name_bucket, access_key_id, access_key_secret string) *OssAliyun {
 	client, err := oss.New(end_point, access_key_id, access_key_secret)
 	if err != nil {
-		logger.Error("错误", zap.Error(err))
+		logx.Error("错误", zap.Error(err))
 		return nil
 	}
 	bucket, err := client.Bucket(name_bucket)
 	if err != nil {
-		logger.Error("错误", zap.Error(err))
+		logx.Error("错误", zap.Error(err))
 		return nil
 	}
 	return &OssAliyun{
@@ -48,7 +48,7 @@ func (t *OssAliyun) BucketList() (_buckets []string, _err error) {
 		return
 	}
 	for _, bucket := range lsRes.Buckets {
-		logger.Debugf("Buckets: %s", bucket.Name)
+		logx.Debugf("Buckets: %s", bucket.Name)
 		_buckets = append(_buckets, bucket.Name)
 	}
 	return
@@ -95,10 +95,10 @@ func (t *OssAliyun) DeleteAllFiles() (_err error) {
 	}
 	defer func() {
 		if _err != nil {
-			logger.Error("DeleteAllFiles", zap.Any("func", GetCurrFuncName()), zap.Error(_err))
+			logx.Error("DeleteAllFiles", zap.Any("func", GetCurrFuncName()), zap.Error(_err))
 		}
 	}()
-	logger.Info("限测试使用 删除所有图片")
+	logx.Info("限测试使用 删除所有图片")
 	marker := oss.Marker("")
 	for {
 		lor, err := t.Bucket.ListObjects(marker)
@@ -110,14 +110,14 @@ func (t *OssAliyun) DeleteAllFiles() (_err error) {
 			if err != nil {
 				return err
 			}
-			logger.Debugf("删除:%s", object.Key)
+			logx.Debugf("删除:%s", object.Key)
 		}
 		marker = oss.Marker(lor.NextMarker)
 		if !lor.IsTruncated {
 			break
 		}
 	}
-	logger.Info("限测试使用 已删除所有图片")
+	logx.Info("限测试使用 已删除所有图片")
 	return nil
 }
 

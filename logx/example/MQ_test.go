@@ -2,9 +2,10 @@ package main
 
 import (
 	"encoding/json"
-	"gobase/logger"
 	"io/ioutil"
 	"testing"
+
+	"gohp/logx"
 )
 
 func Test_mq(t *testing.T) {
@@ -20,10 +21,10 @@ func Test_mq(t *testing.T) {
 		panic(err)
 	}
 
-	err = logger.DefaultWithMap(m)
+	err = logx.DefaultWithMap(m)
 	if err != nil {
 		panic(err)
 	}
-	logger.Debug("白居易")
+	logx.Debug("白居易")
 
 }
