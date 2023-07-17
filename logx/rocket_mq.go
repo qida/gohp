@@ -1,7 +1,7 @@
 package logx
 
 import (
-	"github.com/qida/gohp/rocketmq"
+	"github.com/qida/gohp/mqtt/rocketmq"
 	"github.com/qida/gohp/slice"
 	"go.uber.org/zap/zapcore"
 )
