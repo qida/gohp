@@ -15,7 +15,7 @@ import (
 
 // 	listener, err := net.Listen("tcp", s.address)
 // 	if err != nil {
-// 		log.Fatal("Error starting TCP server")
+// 		log.Print("Error starting TCP server")
 // 	}
 // 	defer listener.Close()
 
@@ -39,7 +39,7 @@ func (s *server) Listen() {
 		listener, err = tls.Listen("tcp", s.address, s.config)
 	}
 	if err != nil {
-		log.Fatal("Error starting TCP server.\r\n", err)
+		log.Print("Error starting TCP server.\r\n", err)
 	}
 	defer listener.Close()
 	go s.initRelay()

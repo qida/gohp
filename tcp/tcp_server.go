@@ -103,7 +103,7 @@ func New(address, relay string) *server {
 func NewWithTLS(address, relay, certFile, keyFile string) *server {
 	cert, err := tls.LoadX509KeyPair(certFile, keyFile)
 	if err != nil {
-		log.Fatal("Error loading certificate files. Unable to create TCP server with TLS functionality.\r\n", err)
+		log.Print("Error loading certificate files. Unable to create TCP server with TLS functionality.\r\n", err)
 	}
 	config := &tls.Config{
 		Certificates: []tls.Certificate{cert},
