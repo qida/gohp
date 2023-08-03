@@ -75,6 +75,19 @@ func RemoveRepeatedInt(arr []int) (newArr []int) {
 	return
 }
 
+// 元素去重
+func RemoveRepeatedInt64(arr []int64) []int64 {
+	occurred := map[int64]bool{}
+	result := []int64{}
+	for e := range arr {
+		if !occurred[arr[e]] {
+			occurred[arr[e]] = true
+			result = append(result, arr[e])
+		}
+	}
+	return result
+}
+
 func RemoveRepeatedFloat64(arr []float64) (newArr []float64) {
 	newArr = make([]float64, 0)
 	for i := 0; i < len(arr); i++ {
