@@ -31,7 +31,6 @@ require (
 	github.com/smartystreets/goconvey v1.7.2
 	github.com/spf13/cast v1.5.1
 	github.com/tal-tech/go-zero v1.2.5
-	github.com/unknwon/com v1.0.1
 	github.com/xxtea/xxtea-go v0.0.0-20170828040851-35c4b17eecf6
 	github.com/yinheli/mahonia v0.0.0-20131226213531-0eef680515cc
 	go.uber.org/zap v1.24.0
