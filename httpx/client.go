@@ -41,7 +41,6 @@ func (t *ClientHttp) PostBody(url string, req, resp interface{}, header map[stri
 		t.client.Header.Set(k, v)
 	}
 	r, _err := t.client.R().
-		EnableTrace().
 		SetBody(req).
 		SetResult(resp).
 		Post(url)
