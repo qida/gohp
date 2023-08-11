@@ -2,7 +2,6 @@ package httpx
 
 import (
 	"context"
-	"fmt"
 	"time"
 
 	"github.com/qida/gohp/logx"
@@ -40,7 +39,7 @@ func (t *ClientHttp) PostBody(url string, req, resp interface{}, header map[stri
 	for k, v := range header {
 		t.client.Header.Set(k, v)
 	}
-	r, _err := t.client.R().
+	_, _err = t.client.R().
 		SetBody(req).
 		SetResult(resp).
 		Post(url)
@@ -48,7 +47,7 @@ func (t *ClientHttp) PostBody(url string, req, resp interface{}, header map[stri
 		logx.Errorf(" 错误:%+v", _err)
 		return
 	}
-	fmt.Println("Trace Info:", r.Request.TraceInfo())
+	// fmt.Println("Trace Info:", r.Request.TraceInfo())
 	return
 }
 func (t *ClientHttp) Post(ctx context.Context, url string, req map[string]string, resp interface{}, header map[string]string) (_err error) {
