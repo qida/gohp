@@ -46,7 +46,3 @@ func (t *ODate) Scan(v interface{}) error {
 	}
 	return fmt.Errorf("can not convert %v to timestamp", v)
 }
-
-func (t *ODate) Sub(v *ODate) time.Duration {
-	return t.Time.Sub(v.Time)
-}
