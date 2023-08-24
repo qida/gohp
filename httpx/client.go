@@ -23,8 +23,8 @@ func NewClientHttp() *ClientHttp {
 		client: client,
 	}
 }
-func (t *ClientHttp) Debug() *ClientHttp {
-	t.client.SetDebug(true)
+func (t *ClientHttp) Debug(debug bool) *ClientHttp {
+	t.client.SetDebug(debug)
 	return t
 }
 func (t *ClientHttp) SetTimeout(time_out_second int) *ClientHttp {
