@@ -3,7 +3,7 @@ package ding2
 import (
 	"fmt"
 
-	"github.com/beego/beego/v2/client/httplib"
+	// "github.com/beego/beego/v2/client/httplib"
 	dingtalk "github.com/icepy/go-dingtalk/src"
 )
 
@@ -60,31 +60,32 @@ func (d *Ding) GetAccessToken() string {
 	d.Client.RefreshCompanyAccessToken()
 	return d.Client.AccessToken
 }
-func (d *Ding) GetDepartment() (deptIds []int, err error) {
-	var root Department
-	req := httplib.Get("https://oapi.dingtalk.com/department/list_ids")
-	req.Param("access_token", d.GetAccessToken())
-	req.Param("fetch_child", "true")
-	req.Param("id", "1")
-	err = req.ToJSON(&root)
-	if err != nil {
-		return
-	}
-	for i := 0; i < len(root.SubDeptIDList); i++ {
-		var dept Department
-		req := httplib.Get("https://oapi.dingtalk.com/department/list_ids")
-		req.Param("access_token", d.GetAccessToken())
-		req.Param("id", fmt.Sprintf("%d", root.SubDeptIDList[i]))
-		err = req.ToJSON(&dept)
-		if err != nil {
-			return
-		}
-		deptIds = append(deptIds, dept.SubDeptIDList...)
-	}
-	deptIds = append(deptIds, root.SubDeptIDList...) //父级
-	deptIds = append(deptIds, 1)                     //根级
-	//父级
-	fmt.Println("=======deptIds=========")
-	fmt.Println(deptIds)
-	return
-}
+
+// func (d *Ding) GetDepartment() (deptIds []int, err error) {
+// 	var root Department
+// 	req := httplib.Get("https://oapi.dingtalk.com/department/list_ids")
+// 	req.Param("access_token", d.GetAccessToken())
+// 	req.Param("fetch_child", "true")
+// 	req.Param("id", "1")
+// 	err = req.ToJSON(&root)
+// 	if err != nil {
+// 		return
+// 	}
+// 	for i := 0; i < len(root.SubDeptIDList); i++ {
+// 		var dept Department
+// 		req := httplib.Get("https://oapi.dingtalk.com/department/list_ids")
+// 		req.Param("access_token", d.GetAccessToken())
+// 		req.Param("id", fmt.Sprintf("%d", root.SubDeptIDList[i]))
+// 		err = req.ToJSON(&dept)
+// 		if err != nil {
+// 			return
+// 		}
+// 		deptIds = append(deptIds, dept.SubDeptIDList...)
+// 	}
+// 	deptIds = append(deptIds, root.SubDeptIDList...) //父级
+// 	deptIds = append(deptIds, 1)                     //根级
+// 	//父级
+// 	fmt.Println("=======deptIds=========")
+// 	fmt.Println(deptIds)
+// 	return
+// }

@@ -1,10 +1,12 @@
 package qywx
 
 import (
+	"context"
 	"fmt"
 	"time"
 
-	"github.com/beego/beego/v2/client/httplib"
+	"github.com/qida/gohp/httpx"
+	// "github.com/beego/beego/v2/client/httplib"
 )
 
 type MsgRestult struct {
@@ -40,14 +42,35 @@ type QYWX struct {
 	CorpSecret string
 }
 
-func NewQywx(corpid string, corpsecret string) (qy *QYWX, err error) {
-	req := httplib.Get("https://qyapi.weixin.qq.com/cgi-bin/gettoken")
-	req.Param("corpid", corpid)
-	req.Param("corpsecret", corpsecret)
+//	func NewQywx(corpid string, corpsecret string) (qy *QYWX, err error) {
+//		req := httplib.Get("https://qyapi.weixin.qq.com/cgi-bin/gettoken")
+//		req.Param("corpid", corpid)
+//		req.Param("corpsecret", corpsecret)
+//		var msgAccessToken MsgAccessToken
+//		err = req.ToJSON(&msgAccessToken)
+//		if err != nil {
+//			fmt.Printf("获取token出错：%s\r\n", err.Error())
+//			return
+//		}
+//		qy = &QYWX{
+//			AccessToken: msgAccessToken.AccessToken,
+//			TimeExpires: time.Now().Add(7200),
+//			CorpId:      corpid,
+//			CorpSecret:  corpsecret,
+//		}
+//		return
+//	}
+func NewQywx(corpid string, corpsecret string) (qy *QYWX, _err error) {
+
 	var msgAccessToken MsgAccessToken
-	err = req.ToJSON(&msgAccessToken)
-	if err != nil {
-		fmt.Printf("获取token出错：%s\r\n", err.Error())
+	var req = map[string]string{
+		"corpid":     corpid,
+		"corpsecret": corpsecret,
+	}
+	_err = httpx.NewClientHttp().Debug(true).GetParams(context.TODO(),
+		"https://qyapi.weixin.qq.com/cgi-bin/gettoken", req, &msgAccessToken, nil)
+	if _err != nil {
+		fmt.Printf("获取token出错：%+v\r\n", _err)
 		return
 	}
 	qy = &QYWX{
@@ -58,8 +81,9 @@ func NewQywx(corpid string, corpsecret string) (qy *QYWX, err error) {
 	}
 	return
 }
+
 func (q *QYWX) GetAccessToken() string {
-	if time.Now().Sub(q.TimeExpires).Seconds() > 0 {
+	if time.Since(q.TimeExpires).Seconds() > 0 {
 		q, _ = NewQywx(q.CorpId, q.CorpSecret)
 	}
 	return q.AccessToken
