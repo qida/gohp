@@ -5,7 +5,7 @@ import (
 	"bytes"
 	"compress/zlib"
 	"encoding/binary"
-	"io/ioutil"
+	"io"
 	"log"
 	"net"
 	"net/http"
@@ -49,7 +49,7 @@ func NewQQwry(path_file string) (qqwry *QQwry) {
 			log.Println(err.Error())
 			return
 		} else {
-			if err = ioutil.WriteFile(qqwry.filepath, tmpData, 0644); err == nil {
+			if err = os.WriteFile(qqwry.filepath, tmpData, 0644); err == nil {
 				log.Printf("已将最新的纯真 IP 库保存到本地 %s ", qqwry.filepath)
 			} else {
 				log.Printf("失败 最新的纯真 IP 库保存到本地 %s ", err.Error())
@@ -64,7 +64,7 @@ func NewQQwry(path_file string) (qqwry *QQwry) {
 			return
 		}
 		defer file.Close()
-		tmpData, err = ioutil.ReadAll(file)
+		tmpData, err = io.ReadAll(file)
 		if err != nil {
 			log.Println(err.Error())
 			return
@@ -140,8 +140,8 @@ func GetOnline() ([]byte, error) {
 		return nil, err
 	}
 	defer resp.Body.Close()
-	if body, err := ioutil.ReadAll(resp.Body); err == nil {
-		if key, err := getKey(); err == nil {
+	if body, err := io.ReadAll(resp.Body); err == nil {
+		if key, err := GetKey(); err == nil {
 			for i := 0; i < 0x200; i++ {
 				key = key * 0x805
 				key++
@@ -152,13 +152,13 @@ func GetOnline() ([]byte, error) {
 			if err != nil {
 				return nil, err
 			}
-			return ioutil.ReadAll(reader)
+			return io.ReadAll(reader)
 		}
 	}
 	return nil, err
 }
 
-func getKey() (uint32, error) {
+func GetKey() (uint32, error) {
 	client := &http.Client{}
 	req, err := http.NewRequest("GET", "http://update.cz88.net/ip/copywrite.rar", strings.NewReader(""))
 	if err != nil {
@@ -171,7 +171,7 @@ func getKey() (uint32, error) {
 		return 0, err
 	}
 	defer resp.Body.Close()
-	if body, err := ioutil.ReadAll(resp.Body); err == nil {
+	if body, err := io.ReadAll(resp.Body); err == nil {
 		log.Printf("body len1:%d\r\n", len(body))
 		// @see https://stackoverflow.com/questions/34078427/how-to-read-packed-binary-data-in-go
 		return binary.LittleEndian.Uint32(body[5*4:]), nil
@@ -227,16 +227,27 @@ func (q *QQwry) readArea(offset uint32) []byte {
 func (q *QQwry) readString(offset uint32) []byte {
 	q.SetOffset(int64(offset))
 	data := make([]byte, 0, 30)
-	buf := make([]byte, 1)
+	buf := make([]byte, 10)
+	// buf := make([]byte, 1)
+	// for {
+	// 	buf = q.ReadData(1)
+	// 	if buf[0] == 0 {
+	// 		break
+	// 	}
+	// 	data = append(data, buf[0])
+	// }
 	for {
-		buf = q.ReadData(1)
-		if buf[0] == 0 {
-			break
+		buf = q.ReadData(len(buf)) // 重复使用buf
+		for i := 0; i < 10; i++ {
+			if buf[i] == 0 {
+				return data
+			}
+			data = append(data, buf[i])
 		}
-		data = append(data, buf[0])
 	}
-	return data
 }
+
+var buf = make([]byte, INDEX_LEN)
 
 // searchIndex 查找索引位置
 func (q *QQwry) searchIndex(ip uint32) uint32 {
@@ -244,7 +255,6 @@ func (q *QQwry) searchIndex(ip uint32) uint32 {
 	start := binary.LittleEndian.Uint32(header[:4])
 	end := binary.LittleEndian.Uint32(header[4:])
 
-	buf := make([]byte, INDEX_LEN)
 	mid := uint32(0)
 	_ip := uint32(0)
 
@@ -286,7 +296,7 @@ func byteToUInt32(data []byte) uint32 {
 	i |= (uint32(data[2]) << 16) & 0xff0000
 	return i
 }
-func (this *QQwry) getMiddleOffset(start uint32, end uint32) uint32 {
+func (t *QQwry) getMiddleOffset(start uint32, end uint32) uint32 {
 	records := ((end - start) / INDEX_LEN) >> 1
 	return start + records*INDEX_LEN
 }

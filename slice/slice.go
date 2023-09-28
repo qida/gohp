@@ -25,71 +25,21 @@ func FindElement(arr []interface{}) (newArr []interface{}) {
 	return
 }
 
+func RemoveDuplicate[T string | int | float64](duplicateSlice []T) []T {
+	set := map[T]interface{}{}
+	res := []T{}
+	for _, item := range duplicateSlice {
+		_, ok := set[item]
+		if !ok {
+			res = append(res, item)
+			set[item] = nil
+		}
+	}
+	return res
+}
+
 func RemoveRepeatedElement(arr []interface{}) (newArr []interface{}) {
 	newArr = make([]interface{}, 0)
-	for i := 0; i < len(arr); i++ {
-		repeat := false
-		for j := i + 1; j < len(arr); j++ {
-			if arr[i] == arr[j] {
-				repeat = true
-				break
-			}
-		}
-		if !repeat {
-			newArr = append(newArr, arr[i])
-		}
-	}
-	return
-}
-
-func RemoveRepeatedString(arr []string) (newArr []string) {
-	newArr = make([]string, 0)
-	for i := 0; i < len(arr); i++ {
-		repeat := false
-		for j := i + 1; j < len(arr); j++ {
-			if arr[i] == arr[j] {
-				repeat = true
-				break
-			}
-		}
-		if !repeat {
-			newArr = append(newArr, arr[i])
-		}
-	}
-	return
-}
-func RemoveRepeatedInt(arr []int) (newArr []int) {
-	newArr = make([]int, 0)
-	for i := 0; i < len(arr); i++ {
-		repeat := false
-		for j := i + 1; j < len(arr); j++ {
-			if arr[i] == arr[j] {
-				repeat = true
-				break
-			}
-		}
-		if !repeat {
-			newArr = append(newArr, arr[i])
-		}
-	}
-	return
-}
-
-// 元素去重
-func RemoveRepeatedInt64(arr []int64) []int64 {
-	occurred := map[int64]bool{}
-	result := []int64{}
-	for e := range arr {
-		if !occurred[arr[e]] {
-			occurred[arr[e]] = true
-			result = append(result, arr[e])
-		}
-	}
-	return result
-}
-
-func RemoveRepeatedFloat64(arr []float64) (newArr []float64) {
-	newArr = make([]float64, 0)
 	for i := 0; i < len(arr); i++ {
 		repeat := false
 		for j := i + 1; j < len(arr); j++ {
@@ -117,30 +67,7 @@ func RemoveElement(arr []interface{}, elem interface{}) []interface{} {
 	}
 	return arr
 }
-func RemoveInt(arr []int, elem int) []int {
-	if len(arr) == 0 {
-		return arr
-	}
-	for i, v := range arr {
-		if v == elem {
-			arr = append(arr[:i], arr[i+1:]...)
-			return RemoveInt(arr, elem)
-		}
-	}
-	return arr
-}
-func RemoveString(arr []string, elem string) []string {
-	if len(arr) == 0 {
-		return arr
-	}
-	for i, v := range arr {
-		if v == elem {
-			arr = append(arr[:i], arr[i+1:]...)
-			return RemoveString(arr, elem)
-		}
-	}
-	return arr
-}
+
 func RemoveZero(slice []interface{}) []interface{} {
 	if len(slice) == 0 {
 		return slice
@@ -194,18 +121,6 @@ func FindAddString(old, now []string) (diff []string) {
 			}
 		}
 		diff = append(diff, old[i])
-	}
-	return
-}
-
-// 指定删除
-func FindSubString(old []string, now string) (diff []string) {
-	for i := 0; i < len(old); i++ {
-		if strings.Contains(now, old[i]) {
-
-		} else {
-			diff = append(diff, old[i])
-		}
 	}
 	return
 }

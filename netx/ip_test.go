@@ -46,13 +46,13 @@ func Test_getKey(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := getKey()
+			got, err := GetKey()
 			if (err != nil) != tt.wantErr {
-				t.Errorf("getKey() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("GetKey() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 			if got != tt.want {
-				t.Errorf("getKey() = %v, want %v", got, tt.want)
+				t.Errorf("GetKey() = %v, want %v", got, tt.want)
 			}
 		})
 	}

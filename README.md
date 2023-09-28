@@ -63,7 +63,9 @@ cp /etc/profile /etc/profile.bak
 
 sudo tee -a /etc/profile <<-'EOF'
 export BASE=/mnt
-export DOWNLOADS=$BASE/downloads
+export QIDA=/mnt/qida
+export DOWNLOAD=$BASE/download
+export PROJECT=$BASE/project
 export GOPATH=$BASE/gopath
 export GOROOT=$BASE/go
 export GOBIN=$GOROOT/bin
@@ -73,10 +75,13 @@ export CGO_ENABLE=0
 export GOARCH=amd64
 export GOOS=linux
 export GO111MODULE=auto
-export GOPROXY=https://proxy.golang.com.cn,https://goproxy.io,direct
+export GOPROXY=https://goproxy.io,direct
+export ASSUME_NO_MOVING_GC_UNSAFE_RISK_IT_WITH=go1.20.3
 export GOPRIVATE=git.sunqida.cn,github.com/qida/go
 export PATH=$PATH:$GOBIN
-export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$BASE/gopath/src/github.com/NICEXAI/WeWorkFinanceSDK/lib
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$GOPATH/src/github.com/silenceper/wechat/work/msgaudit/lib/
+export DOMAIN="sunqida.cn *.sunqida.cn *.admin.sunqida.cn *.api.sunqida.cn *.cdn.sunqida.cn *.dongguang.ren
+*.frps.sunqida.cn *.git.sunqida.cn *.jenkins.sunqida.cn *.k8s.sunqida.cn *.md.sunqida.cn *.mstsc.sunqida.cn *.mysql.sunqida.cn *.nuc.sunqida.cn *.pve.sunqida.cn *.ssh.sunqida.cn *.swagger.sunqida.cn *.trace.sunqida.cn *.vpn.sunqida.cn *.wechat.sunqida.cn *.www.sunqida.cn *.host.sunqida.cn *.zxjy.sunqida.cn dongguang.ren"
 EOF
 
 source /etc/profile

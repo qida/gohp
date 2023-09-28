@@ -1,8 +1,6 @@
 package ding2
 
 import (
-	"fmt"
-
 	// "github.com/beego/beego/v2/client/httplib"
 	dingtalk "github.com/icepy/go-dingtalk/src"
 )
