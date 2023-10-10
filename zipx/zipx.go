@@ -1,11 +1,3 @@
-/*
- * @Author: your name
- * @Date: 2021-06-18 10:16:18
- * @LastEditTime: 2021-06-18 10:31:17
- * @LastEditors: your name
- * @Description: In User Settings Edit
- * @FilePath: \em_servere:\gopath\lib\src\github.com\qida\go\zips\zips.go
- */
 package zipx
 
 import (

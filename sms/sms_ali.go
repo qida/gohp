@@ -1,12 +1,3 @@
-/*
- * @Author: qida
- * @Date: 2022-01-07 13:50:03
- * @LastEditTime: 2022-01-07 15:33:56
- * @LastEditors: qida
- * @Description:
- * @FilePath: \zxjy_api_crme:\gopath\lib\src\github.com\qida\gfc\sms\ali.go
- * good day
- */
 package sms
 
 import (

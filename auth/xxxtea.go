@@ -1,3 +1,4 @@
+// 用于对称加密功能
 package auth
 
 import (
