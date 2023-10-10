@@ -235,3 +235,8 @@ func DateParse(dateString, format string) (time.Time, error) {
 	format = replacer.Replace(format)
 	return time.ParseInLocation(format, dateString, time.Local)
 }
+
+// 判断输入时间是否为当天时间
+func IsToday(t time.Time) bool {
+	return t.Format("2006-01-02") == time.Now().Format("2006-01-02")
+}
