@@ -221,28 +221,27 @@ func SliceDelete[V comparable](s []V, key V) []V {
 	return s[:i]
 }
 
-// SliceStructHas 利用Map判断指定字段值的结构体是否在Slice切片中存在
-//
-//	返回一个回调函数，用来判断指定字段值知否存在，结果为bool
-//	基于泛型形参支持可比较类型，具体定义可参考泛型 comparable 接口
-//	利用反射获取结构体指定字段，判断是否为可比较类型，并赋值给map的key
-//	sl := []User{
-//		{
-//			Name:    "alpha",
-//			Age:     20,
-//			Sex:     "male",
-//			Tickets: []string{"001", "002"},
-//		},
-//		{
-//			Name:    "beta",
-//			Age:     21,
-//			Sex:     "female",
-//			Tickets: []string{"003", "004"},
-//		},
-//	}
-//	f := SliceStructHas[User, string](sl, "Name")
-//	f("alpha") // true
-//	f("sigma") // false
+//	 SliceStructHas 利用Map判断指定字段值的结构体是否在Slice切片中存在
+//		返回一个回调函数，用来判断指定字段值知否存在，结果为bool
+//		基于泛型形参支持可比较类型，具体定义可参考泛型 comparable 接口
+//		利用反射获取结构体指定字段，判断是否为可比较类型，并赋值给map的key
+//		sl := []User{
+//			{
+//				Name:    "alpha",
+//				Age:     20,
+//				Sex:     "male",
+//				Tickets: []string{"001", "002"},
+//			},
+//			{
+//				Name:    "beta",
+//				Age:     21,
+//				Sex:     "female",
+//				Tickets: []string{"003", "004"},
+//			},
+//		}
+//		f := SliceStructHas[User, string](sl, "Name")
+//		f("alpha") // true
+//		f("sigma") // false
 func SliceStructHas[V any, K comparable](s []V, key string) (func(K) bool, error) {
 	tmp := make(map[K]V, len(s))
 	for _, v := range s {
