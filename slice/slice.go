@@ -300,7 +300,6 @@ func SliceIntersection[V comparable](arr1 []V, arr2 []V) []V {
 	for _, str := range arr1 {
 		seen[str] = true
 	}
-
 	var intersection []V
 	for _, str := range arr2 {
 		if seen[str] {
