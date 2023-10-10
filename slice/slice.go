@@ -125,16 +125,6 @@ func FindAddString(old, now []string) (diff []string) {
 	return
 }
 
-// 指定查找
-func FindInt(old []int, now int) bool {
-	for i := 0; i < len(old); i++ {
-		if now == old[i] {
-			return true
-		}
-	}
-	return false
-}
-
 // AppendStr appends string to slice with no duplicates.
 func AppendStr(strs []string, str string) []string {
 	for _, s := range strs {
@@ -179,7 +169,7 @@ func CompareSliceStrU(s1, s2 []string) bool {
 	return len(s2) <= 0
 }
 
-// IsSliceContainsStr returns true if the string exists in given slice, ignore case.
+// 指定查找
 func IsSliceContainsStr(sl []string, str string) bool {
 	str = strings.ToLower(str)
 	for _, s := range sl {
@@ -190,7 +180,7 @@ func IsSliceContainsStr(sl []string, str string) bool {
 	return false
 }
 
-// IsSliceContainsInt64 returns true if the int64 exists in given slice.
+// 指定查找
 func IsSliceContainsInt64(sl []int64, i int64) bool {
 	for _, s := range sl {
 		if s == i {
@@ -205,10 +195,10 @@ func IsSliceContainsInt64(sl []int64, i int64) bool {
 //	返回一个回调函数，用来判断值知否存在，结果为bool
 //	基于泛型形参支持可比较类型，具体定义可参考泛型 comparable 接口
 //	sl := []int{1,3,5,7,9}
-//	f := SliceHas[int](sl)
+//	f := IsHasSlice[int](sl)
 //	f(2) // false
 //	f(5) // true
-func SliceHas[V comparable](s []V) func(V) bool {
+func IsHasSlice[V comparable](s []V) func(V) bool {
 	tmp := make(map[V]struct{}, len(s))
 	for _, v := range s {
 		tmp[v] = struct{}{}
