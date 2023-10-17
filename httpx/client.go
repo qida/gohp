@@ -2,6 +2,7 @@ package httpx
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	"github.com/qida/gohp/logx"
@@ -39,15 +40,20 @@ func (t *ClientHttp) PostBody(url string, req, resp interface{}, header map[stri
 	for k, v := range header {
 		t.client.Header.Set(k, v)
 	}
-	_, _err = t.client.R().
+	var r *resty.Response
+	r, _err = t.client.R().
 		SetBody(req).
 		SetResult(resp).
+		// SetError(_err).
 		Post(url)
 	if _err != nil {
 		logx.Errorf(" 错误:%+v", _err)
 		return
 	}
-	// fmt.Println("Trace Info:", r.Request.TraceInfo())
+	if r.StatusCode() != 200 {
+		_err = fmt.Errorf("服务器异常 %s", r.Status())
+		return
+	}
 	return
 }
 func (t *ClientHttp) Post(ctx context.Context, url string, req map[string]string, resp interface{}, header map[string]string) (_err error) {
@@ -57,10 +63,15 @@ func (t *ClientHttp) Post(ctx context.Context, url string, req map[string]string
 	for k, v := range header {
 		t.client.Header.Set(k, v)
 	}
-	_, _err = t.client.R().
+	var r *resty.Response
+	r, _err = t.client.R().
 		SetQueryParams(req).
 		SetResult(resp).
 		Post(url)
+	if r.StatusCode() != 200 {
+		_err = fmt.Errorf("服务器异常 %s", r.Status())
+		return
+	}
 	return
 }
 func (t *ClientHttp) Get(ctx context.Context, url string, resp interface{}, header map[string]string) (_err error) {
@@ -70,9 +81,14 @@ func (t *ClientHttp) Get(ctx context.Context, url string, resp interface{}, head
 	for k, v := range header {
 		t.client.Header.Set(k, v)
 	}
-	_, _err = t.client.R().
+	var r *resty.Response
+	r, _err = t.client.R().
 		SetResult(resp).
 		Get(url)
+	if r.StatusCode() != 200 {
+		_err = fmt.Errorf("服务器异常 %s", r.Status())
+		return
+	}
 	return
 }
 
@@ -84,8 +100,13 @@ func (t *ClientHttp) GetParams(ctx context.Context, url string, req map[string]s
 		t.client.Header.Set(k, v)
 	}
 	t.client.SetQueryParams(req)
-	_, _err = t.client.R().
+	var r *resty.Response
+	r, _err = t.client.R().
 		SetResult(resp).
 		Get(url)
+	if r.StatusCode() != 200 {
+		_err = fmt.Errorf("服务器异常 %s", r.Status())
+		return
+	}
 	return
 }
