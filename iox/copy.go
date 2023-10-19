@@ -9,63 +9,7 @@ import (
 	"path/filepath"
 	"strings"
 	"time"
-
-	"github.com/bytedance/gopkg/util/logger"
 )
-
-func GetFileExist(filepath string) bool {
-	if _, err := os.Stat(filepath); os.IsNotExist(err) {
-		// path/to/whatever does not exist
-		fmt.Printf("没有找到文件：%s\r\n", filepath)
-		return false
-	}
-	return true
-}
-
-// 获取指定目录及所有子目录下的所有文件，可以匹配后缀过滤。
-func WalkDir(dirPth string, suffix []string) (_files []string, _err error) {
-	ok, _ := pathExists(dirPth, true) //不存在就建立
-	if !ok {
-		logger.Debugf("目录不存在:%s", dirPth)
-		return
-	}
-	_files = make([]string, 0, 30)
-	for i := 0; i < len(suffix); i++ {
-		suffix[i] = strings.ToUpper(suffix[i]) //忽略后缀匹配的大小写
-	}
-	_err = filepath.Walk(dirPth, func(filename string, fi os.FileInfo, err error) error { //遍历目录
-		if err != nil {
-		}
-		if fi.IsDir() { // 忽略目录
-			return nil
-		}
-		for _, v := range suffix {
-			if strings.HasSuffix(strings.ToUpper(fi.Name()), v) {
-				_files = append(_files, filename)
-				break
-			}
-		}
-		return nil
-	})
-	return
-}
-
-// 检测文件夹路径时候存在
-func pathExists(path string, is_create bool) (bool, error) {
-	_, err := os.Stat(path)
-	if err == nil {
-		return true, nil
-	}
-	if os.IsNotExist(err) {
-		if is_create {
-			if err = os.MkdirAll(path, os.ModePerm); err == nil {
-				return true, nil
-			}
-		}
-		return false, err
-	}
-	return false, err
-}
 
 /**
  * 拷贝文件夹,同时拷贝文件夹中的文件
@@ -128,8 +72,8 @@ func CopyFile(src, dest string) (w int64, err error) {
 	for index, dir := range destSplitPathDirs {
 		if index < len(destSplitPathDirs)-1 {
 			destSplitPath = destSplitPath + dir + "/"
-			b, _ := pathExists(destSplitPath, false)
-			if b == false {
+			b, _ := DirExistOrCreate(destSplitPath, false)
+			if !b {
 				fmt.Println("创建目录:" + destSplitPath)
 				//创建目录
 				err := os.Mkdir(destSplitPath, os.ModePerm)
@@ -184,22 +128,4 @@ func unzip(archive, target string) error {
 	}
 
 	return nil
-}
-
-func IsDirOrCreate(fileAddr string) bool {
-	s, err := os.Stat(fileAddr)
-	if err != nil {
-		err = os.MkdirAll(fileAddr, 0766)
-		if err != nil {
-			return false
-		}
-	}
-	return s.IsDir()
-}
-func IsDir(fileAddr string) bool {
-	s, err := os.Stat(fileAddr)
-	if err != nil {
-		return false
-	}
-	return s.IsDir()
 }
