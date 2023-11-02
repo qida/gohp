@@ -15,11 +15,13 @@ type ClientHttp struct {
 }
 
 func NewClientHttp() *ClientHttp {
-	client := resty.New().SetContentLength(true)
-	client.Header.Set("User-Agent", "LabelCenter HTTP CLIENT")
-	client.Header.Set("Content-Type", "application/json;charset=utf-8")
-	client.SetTimeout(time.Second * 10)
-
+	client := resty.New().SetContentLength(true).
+		SetHeader("User-Agent", "HTTP CLIENT").
+		SetHeader("Content-Type", "application/json;charset=utf-8").
+		SetTimeout(time.Second * 10).
+		SetRetryCount(3).
+		SetRetryWaitTime(500 * time.Millisecond).
+		SetRetryMaxWaitTime(2 * time.Second)
 	return &ClientHttp{
 		client: client,
 	}
