@@ -51,7 +51,7 @@ func (t *ClientHttp) PostBody(url string, req, resp interface{}, header map[stri
 		return
 	}
 	if r.StatusCode() != 200 {
-		_err = fmt.Errorf("服务器异常 %s", r.Status())
+		_err = fmt.Errorf("服务器异常 %d %s", r.StatusCode(), r.Status())
 		return
 	}
 	return
@@ -69,7 +69,7 @@ func (t *ClientHttp) Post(ctx context.Context, url string, req map[string]string
 		SetResult(resp).
 		Post(url)
 	if r.StatusCode() != 200 {
-		_err = fmt.Errorf("服务器异常 %s", r.Status())
+		_err = fmt.Errorf("服务器异常 %d %s", r.StatusCode(), r.Status())
 		return
 	}
 	return
@@ -86,7 +86,7 @@ func (t *ClientHttp) Get(ctx context.Context, url string, resp interface{}, head
 		SetResult(resp).
 		Get(url)
 	if r.StatusCode() != 200 {
-		_err = fmt.Errorf("服务器异常 %s", r.Status())
+		_err = fmt.Errorf("服务器异常 %d %s", r.StatusCode(), r.Status())
 		return
 	}
 	return
@@ -105,7 +105,7 @@ func (t *ClientHttp) GetParams(ctx context.Context, url string, req map[string]s
 		SetResult(resp).
 		Get(url)
 	if r.StatusCode() != 200 {
-		_err = fmt.Errorf("服务器异常 %s", r.Status())
+		_err = fmt.Errorf("服务器异常 %d %s", r.StatusCode(), r.Status())
 		return
 	}
 	return
