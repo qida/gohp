@@ -206,3 +206,29 @@ func CopyDir(srcPath, destPath string, filters ...func(filePath string) bool) er
 	}
 	return nil
 }
+
+// 检测文件夹路径时候存在
+func DirExistOrCreate(path string, is_create bool) (bool, error) {
+	_, err := os.Stat(path)
+	if err == nil {
+		return true, nil
+	}
+	if os.IsNotExist(err) {
+		if is_create {
+			if err = os.MkdirAll(path, os.ModePerm); err == nil {
+				return true, nil
+			}
+		}
+		return false, err
+	}
+	return false, err
+}
+
+// 判断是否为目录
+func IsDir(fileAddr string) bool {
+	s, err := os.Stat(fileAddr)
+	if err != nil {
+		return false
+	}
+	return s.IsDir()
+}

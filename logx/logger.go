@@ -2,8 +2,7 @@ package logx
 
 import (
 	"encoding/json"
-	"fmt"
-	"io/ioutil"
+	"os"
 	"sync"
 	"time"
 
@@ -104,7 +103,7 @@ func DefaultWithMap(m map[string]interface{}) error {
 
 func InitLogZapMQ(path string) {
 
-	jsonStr, err := ioutil.ReadFile(path)
+	jsonStr, err := os.ReadFile(path)
 	if err != nil {
 		panic(err)
 	}
@@ -208,7 +207,7 @@ func NewWithMap(m map[string]interface{}) (*Logger, error) {
 			}
 			opts = append(opts, WithInitialFields(key, value))
 		default:
-			fmt.Println("没有这个参数: ", k)
+			// fmt.Println("没有这个参数: ", k)
 		}
 	}
 	return NewLog(opts...)
