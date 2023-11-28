@@ -3,15 +3,24 @@ package httpx
 import (
 	"context"
 	"fmt"
+	"os"
 	"time"
 
-	"github.com/qida/gohp/logx"
-
 	"github.com/go-resty/resty/v2"
+	"github.com/qida/gohp/logx"
+	"github.com/sirupsen/logrus"
 )
+
+var logger *logrus.Logger
 
 type ClientHttp struct {
 	client *resty.Client
+}
+
+func init() {
+	logger = logrus.New()
+	logFile, _ := os.OpenFile("./log/go-resty.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
+	logger.SetOutput(logFile)
 }
 
 func NewClientHttp() *ClientHttp {
@@ -28,6 +37,9 @@ func NewClientHttp() *ClientHttp {
 }
 func (t *ClientHttp) Debug(debug bool) *ClientHttp {
 	t.client.SetDebug(debug)
+	if debug {
+		t.client.SetLogger(logger)
+	}
 	return t
 }
 func (t *ClientHttp) SetTimeout(time_out_second int) *ClientHttp {
