@@ -207,7 +207,6 @@ func NewWithMap(m map[string]interface{}) (*Logger, error) {
 			}
 			opts = append(opts, WithInitialFields(key, value))
 		default:
-			// fmt.Println("没有这个参数: ", k)
 		}
 	}
 	return NewLog(opts...)

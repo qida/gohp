@@ -3,24 +3,40 @@ package httpx
 import (
 	"context"
 	"fmt"
+	"io"
 	"os"
 	"time"
 
 	"github.com/go-resty/resty/v2"
-	"github.com/qida/gohp/logx"
 	"github.com/sirupsen/logrus"
 )
-
-var logger *logrus.Logger
 
 type ClientHttp struct {
 	client *resty.Client
 }
 
+var logger *logrus.Logger
+
 func init() {
 	logger = logrus.New()
-	logFile, _ := os.OpenFile("./log/go-resty.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
-	logger.SetOutput(logFile)
+	// 设置输出样式，自带的只有两种样式logrus.JSONFormatter{}和logrus.TextFormatter{}
+	logrus.SetFormatter(&logrus.JSONFormatter{})
+	logger.SetOutput(os.Stdout)
+	logFile, err := os.OpenFile("./log/go-resty.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
+	if err != nil {
+		logger.Error("failed to log to file.")
+		return
+	}
+	//设置output,默认为stderr,可以为任何io.Writer，比如文件*os.File
+	writers := []io.Writer{
+		logFile,
+		os.Stdout}
+	//同时写文件和屏幕
+	fileAndStdoutWriter := io.MultiWriter(writers...)
+	logger.SetOutput(fileAndStdoutWriter)
+	//设置最低loglevel
+	logger.SetLevel(logrus.DebugLevel)
+	logger.Info("init logger success")
 }
 
 func NewClientHttp() *ClientHttp {
@@ -37,9 +53,10 @@ func NewClientHttp() *ClientHttp {
 }
 func (t *ClientHttp) Debug(debug bool) *ClientHttp {
 	t.client.SetDebug(debug)
-	if debug {
-		t.client.SetLogger(logger)
-	}
+	return t
+}
+func (t *ClientHttp) LogFile() *ClientHttp {
+	t.client.SetLogger(logger)
 	return t
 }
 func (t *ClientHttp) SetTimeout(time_out_second int) *ClientHttp {
@@ -61,7 +78,6 @@ func (t *ClientHttp) PostBody(url string, req, resp interface{}, header map[stri
 		// SetError(_err).
 		Post(url)
 	if _err != nil {
-		logx.Errorf(" 错误:%+v", _err)
 		return
 	}
 	if r.StatusCode() != 200 {
