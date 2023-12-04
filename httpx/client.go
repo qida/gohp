@@ -21,7 +21,7 @@ func init() {
 	logger = logrus.New()
 	// 设置输出样式，自带的只有两种样式logrus.JSONFormatter{}和logrus.TextFormatter{}
 	logrus.SetFormatter(&logrus.JSONFormatter{})
-	logger.SetOutput(os.Stdout)
+	// logger.SetOutput(os.Stdout)
 	logFile, err := os.OpenFile("./log/go-resty.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
 	if err != nil {
 		logger.Error("failed to log to file.")
