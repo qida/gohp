@@ -3,40 +3,42 @@ package httpx
 import (
 	"context"
 	"fmt"
-	"io"
+	"log"
 	"os"
 	"time"
 
 	"github.com/go-resty/resty/v2"
-	"github.com/sirupsen/logrus"
 )
+
+type FileLogger struct {
+	file *os.File
+}
+
+func (l *FileLogger) Errorf(format string, v ...interface{}) {
+	l.file.WriteString(fmt.Sprintf(format, v...))
+}
+func (l *FileLogger) Warnf(format string, v ...interface{}) {
+	l.file.WriteString(fmt.Sprintf(format, v...))
+}
+func (l *FileLogger) Debugf(format string, v ...interface{}) {
+	l.file.WriteString(fmt.Sprintf(format, v...))
+}
 
 type ClientHttp struct {
 	client *resty.Client
 }
 
-var logger *logrus.Logger
+var logger *FileLogger
 
 func init() {
-	logger = logrus.New()
-	// 设置输出样式，自带的只有两种样式logrus.JSONFormatter{}和logrus.TextFormatter{}
-	logrus.SetFormatter(&logrus.JSONFormatter{})
-	// logger.SetOutput(os.Stdout)
+	// 创建日志文件
+	// logFile, err := os.OpenFile("request.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
 	logFile, err := os.OpenFile("./log/go-resty.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
 	if err != nil {
-		logger.Error("failed to log to file.")
-		return
+		log.Fatalf("Failed to open log file: %v", err)
 	}
-	//设置output,默认为stderr,可以为任何io.Writer，比如文件*os.File
-	writers := []io.Writer{
-		logFile,
-		os.Stdout}
-	//同时写文件和屏幕
-	fileAndStdoutWriter := io.MultiWriter(writers...)
-	logger.SetOutput(fileAndStdoutWriter)
-	//设置最低loglevel
-	logger.SetLevel(logrus.DebugLevel)
-	logger.Info("init logger success")
+	// defer logFile.Close()
+	logger = &FileLogger{file: logFile}
 }
 
 func NewClientHttp() *ClientHttp {
