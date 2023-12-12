@@ -31,8 +31,9 @@ type ClientHttp struct {
 var logger *FileLogger
 
 func init() {
-	// 创建日志文件
-	// logFile, err := os.OpenFile("request.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
+	if _, err := os.Stat("./log"); os.IsNotExist(err) {
+		os.Mkdir("./log", os.ModePerm)
+	}
 	logFile, err := os.OpenFile("./log/go-resty.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
 	if err != nil {
 		log.Fatalf("Failed to open log file: %v", err)
@@ -88,6 +89,7 @@ func (t *ClientHttp) PostBody(url string, req, resp interface{}, header map[stri
 	}
 	return
 }
+
 func (t *ClientHttp) Post(ctx context.Context, url string, req map[string]string, resp interface{}, header map[string]string) (_err error) {
 	defer func() {
 		t.client.SetCloseConnection(true)
