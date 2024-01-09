@@ -34,7 +34,7 @@ var once sync.Once
 
 func NewClientHttp() *ClientHttp {
 	client := resty.New().SetContentLength(true).
-		SetHeader("User-Agent", "HTTP CLIENT").
+		SetHeader("User-Agent", "HTTP Client").
 		SetHeader("Content-Type", "application/json;charset=utf-8").
 		SetTimeout(time.Second * 10).
 		SetRetryCount(3).
@@ -63,6 +63,7 @@ func (t *ClientHttp) LogFile() *ClientHttp {
 		logger = &FileLogger{file: logFile}
 	})
 	t.client.SetLogger(logger)
+	//t.client.SetLogger(log.New(logFile, "", log.LstdFlags))
 	return t
 }
 
