@@ -83,6 +83,7 @@ export GOPROXY=https://goproxy.io,direct
 export ASSUME_NO_MOVING_GC_UNSAFE_RISK_IT_WITH=go1.20.3
 export GOPRIVATE=git.sunqida.cn,github.com/qida/go
 export PATH=$PATH:$GOBIN
+export TZ='Asia/Shanghai'
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$GOPATH/src/github.com/silenceper/wechat/work/msgaudit/lib/
 export DOMAIN="sunqida.cn *.sunqida.cn *.admin.sunqida.cn *.api.sunqida.cn *.cdn.sunqida.cn *.dongguang.ren
 *.frps.sunqida.cn *.git.sunqida.cn *.jenkins.sunqida.cn *.k8s.sunqida.cn *.md.sunqida.cn *.mstsc.sunqida.cn *.mysql.sunqida.cn *.nuc.sunqida.cn *.pve.sunqida.cn *.ssh.sunqida.cn *.swagger.sunqida.cn *.trace.sunqida.cn *.vpn.sunqida.cn *.wechat.sunqida.cn *.www.sunqida.cn *.host.sunqida.cn *.zxjy.sunqida.cn dongguang.ren"
