@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"sync"
 	"time"
 
 	"github.com/go-resty/resty/v2"
@@ -29,21 +30,11 @@ type ClientHttp struct {
 }
 
 var logger *FileLogger
-
-func init() {
-	// 创建日志文件
-	// logFile, err := os.OpenFile("request.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
-	logFile, err := os.OpenFile("./log/go-resty.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
-	if err != nil {
-		log.Fatalf("Failed to open log file: %v", err)
-	}
-	// defer logFile.Close()
-	logger = &FileLogger{file: logFile}
-}
+var once sync.Once
 
 func NewClientHttp() *ClientHttp {
 	client := resty.New().SetContentLength(true).
-		SetHeader("User-Agent", "HTTP CLIENT").
+		SetHeader("User-Agent", "HTTP Client").
 		SetHeader("Content-Type", "application/json;charset=utf-8").
 		SetTimeout(time.Second * 10).
 		SetRetryCount(3).
@@ -57,10 +48,25 @@ func (t *ClientHttp) Debug(debug bool) *ClientHttp {
 	t.client.SetDebug(debug)
 	return t
 }
+
 func (t *ClientHttp) LogFile() *ClientHttp {
+	once.Do(func() {
+		if _, err := os.Stat("./log"); os.IsNotExist(err) {
+			os.Mkdir("./log", os.ModePerm)
+		}
+		// 创建日志文件
+		logFile, err := os.OpenFile("./log/go-resty.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
+		if err != nil {
+			log.Fatalf("Failed to open log file: %v", err)
+		}
+		// defer logFile.Close()
+		logger = &FileLogger{file: logFile}
+	})
 	t.client.SetLogger(logger)
+	//t.client.SetLogger(log.New(logFile, "", log.LstdFlags))
 	return t
 }
+
 func (t *ClientHttp) SetTimeout(time_out_second int) *ClientHttp {
 	t.client.SetTimeout(time.Duration(time_out_second * int(time.Second)))
 	return t
@@ -88,6 +94,7 @@ func (t *ClientHttp) PostBody(url string, req, resp interface{}, header map[stri
 	}
 	return
 }
+
 func (t *ClientHttp) Post(ctx context.Context, url string, req map[string]string, resp interface{}, header map[string]string) (_err error) {
 	defer func() {
 		t.client.SetCloseConnection(true)

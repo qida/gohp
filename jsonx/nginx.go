@@ -1,11 +1,9 @@
 package jsonx
 
 import (
-	"fmt"
 	"log"
 
 	"github.com/recoye/config"
-	"github.com/smartystreets/goconvey/web/server/parser"
 )
 
 type Upstream struct {
@@ -25,12 +23,5 @@ func ReadNginxConf(file_path string) (_err error) {
 	} else {
 		log.Println(err)
 	}
-	return
-}
-
-func ReadNginxConf1(file_path string) (_err error) {
-	p := parser.NewParser(file_path)
-	c := p.Parse()
-	fmt.Println(gonginx.DumpConfig(c, gonginx.IndentedStyle))
 	return
 }
