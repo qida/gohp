@@ -44,5 +44,11 @@ func (t *OTime) Scan(v interface{}) error {
 		*t = OTime{Time: value}
 		return nil
 	}
-	return fmt.Errorf("can not convert %v to timestamp", v)
+	return fmt.Errorf("can not convert %v to OTime", v)
+}
+func (t *OTime) IsNull() bool {
+ 	if t == nil {
+		return true
+	}
+	return t.Time.UnixNano() == 0 
 }
