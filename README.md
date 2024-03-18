@@ -121,3 +121,14 @@ sudo tee -a /etc/ld.so.conf <<-'EOF'
 EOF
 sudo ldconfig
 ```
+
+
+### Win11安装 
+``` sh
+winget install --id Microsoft.Powershell --source winget
+
+Install-Module -Name PowerShellGet -Force
+winget install JanDeDobbeleer.OhMyPosh -s winget
+PowerShellGet\Install-Module posh-git -Scope CurrentUser -Force
+Install-Module PSReadLine
+```
