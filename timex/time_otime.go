@@ -47,8 +47,8 @@ func (t *OTime) Scan(v interface{}) error {
 	return fmt.Errorf("can not convert %v to OTime", v)
 }
 func (t *OTime) IsNull() bool {
- 	if t == nil {
+	if t == nil {
 		return true
 	}
-	return t.Time.UnixNano() == 0 
+	return t.Time.UnixNano() == 0
 }
