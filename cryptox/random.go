@@ -2,7 +2,7 @@
 // Use of this source code is governed by a MIT-style
 // license that can be found in the LICENSE file.
 
-package crypto
+package cryptox
 
 import (
 	"crypto/hmac"
@@ -39,8 +39,7 @@ const (
 // Same purpose, id and digits will result in the same derived seed for this
 // instance of running application.
 //
-//   out = HMAC(rngKey, purpose || id || 0x00 || digits)  (cut to 16 bytes)
-//
+//	out = HMAC(rngKey, purpose || id || 0x00 || digits)  (cut to 16 bytes)
 func deriveSeed(purpose byte, id string, digits []byte) (out [16]byte) {
 	var buf [sha256.Size]byte
 	h := hmac.New(sha256.New, rngKey[:])

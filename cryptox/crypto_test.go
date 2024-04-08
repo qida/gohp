@@ -1,4 +1,4 @@
-package crypto
+package cryptox
 
 import (
 	//"fmt"
@@ -19,7 +19,7 @@ var (
 )
 
 func TestMD5(t *testing.T) {
-	out := GetMD5(input)
+	out := GetMD5Srting(input)
 	assert.Equal(t, md5Output, out)
 	assert.Equal(t, true, CheckMD5(input, out))
 	assert.Equal(t, false, CheckMD5(input, input))

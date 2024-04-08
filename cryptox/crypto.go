@@ -1,14 +1,12 @@
-package crypto
+package cryptox
 
 import (
 	"bytes"
 	"crypto/aes"
 	"crypto/cipher"
 	"crypto/hmac"
-	"crypto/md5"
 	"crypto/sha1"
 	"encoding/base64"
-	"encoding/hex"
 	"fmt"
 	"io"
 
@@ -31,17 +29,6 @@ func GetHmacSha1(data string, key string) string {
 	mac := hmac.New(sha1.New, []byte(key))
 	mac.Write([]byte(data))
 	return fmt.Sprintf("%x", mac.Sum(nil))
-}
-
-func GetMD5(data string) string {
-	h := md5.New()
-	h.Write([]byte(data))
-	return hex.EncodeToString(h.Sum(nil))
-}
-
-func CheckMD5(data string, sum string) bool {
-	out := GetMD5(data)
-	return sum == out
 }
 
 func Base64EncodeByte(data []byte) []byte {
@@ -94,22 +81,6 @@ func AESDecode(data string, key string) (string, error) {
 	}
 	out, err := AESDecodeByte(d, []byte(key))
 	return string(out), err
-}
-
-func MD5V(str string) string {
-	h := md5.New()
-	h.Write([]byte(str))
-	return hex.EncodeToString(h.Sum(nil))
-}
-
-func MD5Str(str string) string {
-	return MD5Byte([]byte(str))
-}
-
-func MD5Byte(byts []byte) string {
-	h := md5.New()
-	h.Write(byts)
-	return hex.EncodeToString(h.Sum(nil))
 }
 
 func PKCS7Padding(ciphertext []byte, blockSize int) []byte {

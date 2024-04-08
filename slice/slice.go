@@ -190,6 +190,16 @@ func IsSliceContainsInt64(sl []int64, i int64) bool {
 	return false
 }
 
+func FindSliceContainsStr(sl []string, str string) bool {
+	str = strings.ToLower(str)
+	for _, s := range sl {
+		if strings.Contains(s, str) {
+			return true
+		}
+	}
+	return false
+}
+
 // SliceHas 利用Map判断指定值是否在Slice切片中存在
 //
 //	返回一个回调函数，用来判断值知否存在，结果为bool
