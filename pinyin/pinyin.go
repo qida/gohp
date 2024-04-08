@@ -6,6 +6,7 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"regexp"
 	"strconv"
 	"strings"
 	"unicode/utf8"
@@ -202,6 +203,10 @@ func GetPY(src string) (py string) {
 	var err error
 	src = strings.Trim(src, " ")
 	if src != "" {
+		// 使用正则表达式匹配非汉字、非字母和非数字的字符，并替换为""
+		reg := regexp.MustCompile(`[^\p{Han}\p{L}\p{N}]`)
+		src = reg.ReplaceAllString(src, "")
+
 		py, err = New(src).Split("").Mode(Initials).Convert()
 		if err != nil {
 			py = src

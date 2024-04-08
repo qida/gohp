@@ -13,6 +13,9 @@ func GetMD5Srting(data string) string {
 }
 
 func GetMD5Srtings(data []string) string {
+	if len(data) == 0 {
+		return ""
+	}
 	h := md5.New()
 	bytes, _ := json.Marshal(data)
 	h.Write(bytes)
