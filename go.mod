@@ -30,7 +30,7 @@ require (
 	github.com/smartystreets/goconvey v1.8.1
 	github.com/spf13/cast v1.5.1
 	github.com/tal-tech/go-zero v1.2.5
-	github.com/xxtea/xxtea-go v0.0.0-20170828040851-35c4b17eecf6
+	github.com/xxtea/xxtea-go v1.0.0
 	github.com/yinheli/mahonia v0.0.0-20131226213531-0eef680515cc
 	go.uber.org/zap v1.26.0
 	golang.org/x/image v0.13.0
