@@ -193,7 +193,7 @@ func IsSliceContainsInt64(sl []int64, i int64) bool {
 func FindSliceContainsStr(sl []string, str string) bool {
 	str = strings.ToLower(str)
 	for _, s := range sl {
-		if strings.Contains(s, str) {
+		if strings.Contains(s, str) || strings.Contains(str, s) {
 			return true
 		}
 	}
