@@ -1,4 +1,4 @@
-package img
+package imagex
 
 import (
 	"bufio"
@@ -19,7 +19,7 @@ type Qrcode struct {
 	ext       string
 }
 
-//生成二维码
+// 生成二维码
 func NewQrcode(text string, ext string) (qrCode Qrcode, err error) {
 	qrCode.ext = ext
 	img, _ := qr.Encode(text, qr.M, qr.Auto)
@@ -38,7 +38,7 @@ func NewQrcode(text string, ext string) (qrCode Qrcode, err error) {
 	return
 }
 
-//保存二维码
+// 保存二维码
 func (Q *Qrcode) OutQrcode(file_path string) (err error) {
 	imgFile, _ := os.Create(file_path)
 	defer imgFile.Close()

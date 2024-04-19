@@ -1,4 +1,4 @@
-package img
+package imagex
 
 import (
 	"bytes"
@@ -56,7 +56,7 @@ func NewImage(img_tpl_path string) (img *Img, err error) {
 	return
 }
 
-//Image2RGBA Image2RGBA
+// Image2RGBA Image2RGBA
 func Image2RGBA(img image.Image) *image.NRGBA {
 	baseSrcBounds := img.Bounds().Max
 	newWidth := baseSrcBounds.X

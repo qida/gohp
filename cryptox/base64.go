@@ -1,19 +1,8 @@
 package cryptox
 
 import (
-	"bytes"
-	"crypto/aes"
-	"crypto/cipher"
-	"crypto/hmac"
-	"crypto/sha1"
 	"encoding/base64"
-	"fmt"
-	"io"
-
-	uuid "github.com/nu7hatch/gouuid"
 )
-
-}
 
 func Base64EncodeByte(data []byte) []byte {
 	return []byte(base64.StdEncoding.EncodeToString(data))

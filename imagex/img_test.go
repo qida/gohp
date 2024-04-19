@@ -1,4 +1,4 @@
-package img
+package imagex
 
 import "testing"
 
