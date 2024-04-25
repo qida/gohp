@@ -57,6 +57,15 @@ func HumaneFileSize(s uint64) string {
 	return humanateBytes(s, 1024, sizes)
 }
 
+// 获取文件大小
+func FileSize(file string) (int64, error) {
+	f, err := os.Stat(file)
+	if err != nil {
+		return 0, err
+	}
+	return f.Size(), nil
+}
+
 // 获取文件修改时间
 func FileMTimeInt64(file string) (int64, error) {
 	f, err := os.Stat(file)
@@ -84,11 +93,7 @@ func FileMTime(file string) (time.Time, error) {
 	return f.ModTime(), nil
 }
 
-// 获取文件大小
-func FileSize(file string) (int64, error) {
-	f, err := os.Stat(file)
-	if err != nil {
-		return 0, err
-	}
-	return f.Size(), nil
+// 把秒级的时间戳转为time格式
+func SecondToTime(sec int64) time.Time {
+	return time.Unix(sec, 0)
 }
