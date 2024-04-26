@@ -93,6 +93,15 @@ source /etc/profile
 #LD_LIBRARY_PATH
 find / -name "*libxcb.so.1*"
 ```
+### Crond
+
+```
+0 0   * * * /mnt/sh/check_certd.sh
+0 */1 * * * /mnt/sh/ding2_sysinfo.sh
+0 0   * * * ntpdate cn.pool.ntp.org >> /var/log/ntpdate.log 2>&1
+#  service crond reload
+```
+
 ### Go Package
 ``` sh
 go version
@@ -120,4 +129,15 @@ sudo tee -a /etc/ld.so.conf <<-'EOF'
 /mnt/gopath/src/github.com/NICEXAI/WeWorkFinanceSDK/lib
 EOF
 sudo ldconfig
+```
+
+
+### Win11安装 
+``` sh
+winget install --id Microsoft.Powershell --source winget
+
+Install-Module -Name PowerShellGet -Force
+winget install JanDeDobbeleer.OhMyPosh -s winget
+PowerShellGet\Install-Module posh-git -Scope CurrentUser -Force
+Install-Module PSReadLine
 ```

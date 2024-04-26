@@ -30,15 +30,6 @@ func (t OTime) MarshalJSON() ([]byte, error) {
 	return []byte(formatted), nil
 }
 
-func (t *OTime) Scan(v interface{}) error {
-	value, ok := v.(time.Time)
-	if ok {
-		*t = OTime{Time: value}
-		return nil
-	}
-	return fmt.Errorf("can not convert %v to timestamp", v)
-}
-
 func (t OTime) Value() (driver.Value, error) {
 	var zeroTime time.Time
 	if t.Time.UnixNano() == zeroTime.UnixNano() {
@@ -47,6 +38,17 @@ func (t OTime) Value() (driver.Value, error) {
 	return t.Time, nil
 }
 
+func (t *OTime) Scan(v interface{}) error {
+	value, ok := v.(time.Time)
+	if ok {
+		*t = OTime{Time: value}
+		return nil
+	}
+	return fmt.Errorf("can not convert %v to OTime", v)
+}
 func (t *OTime) IsNull() bool {
+	if t == nil {
+		return true
+	}
 	return t.Time.UnixNano() == 0
 }
