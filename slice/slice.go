@@ -55,17 +55,26 @@ func RemoveRepeatedElement(arr []interface{}) (newArr []interface{}) {
 	return
 }
 
-func RemoveElement(arr []interface{}, elem interface{}) []interface{} {
-	if len(arr) == 0 {
-		return arr
-	}
-	for i, v := range arr {
-		if v == elem {
-			arr = append(arr[:i], arr[i+1:]...)
-			return RemoveElement(arr, elem)
+//	func RemoveElement(arr []interface{}, elem interface{}) []interface{} {
+//		if len(arr) == 0 {
+//			return arr
+//		}
+//		for i, v := range arr {
+//			if v == elem {
+//				arr = append(arr[:i], arr[i+1:]...)
+//				return RemoveElement(arr, elem)
+//			}
+//		}
+//		return arr
+//	}
+func RemoveElement[T comparable](arr []T, elem T) []T {
+	result := arr[:0]
+	for _, v := range arr {
+		if v != elem {
+			result = append(result, v)
 		}
 	}
-	return arr
+	return result
 }
 
 func RemoveZero(slice []interface{}) []interface{} {
@@ -184,16 +193,6 @@ func IsSliceContainsStr(sl []string, str string) bool {
 func IsSliceContainsInt64(sl []int64, i int64) bool {
 	for _, s := range sl {
 		if s == i {
-			return true
-		}
-	}
-	return false
-}
-
-func FindSliceContainsStr(sl []string, str string) bool {
-	str = strings.ToLower(str)
-	for _, s := range sl {
-		if strings.Contains(s, str) || strings.Contains(str, s) {
 			return true
 		}
 	}

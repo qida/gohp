@@ -18,6 +18,7 @@ import (
 	"fmt"
 	"math"
 	"os"
+	"time"
 )
 
 // Storage unit constants.
@@ -56,8 +57,8 @@ func HumaneFileSize(s uint64) string {
 	return humanateBytes(s, 1024, sizes)
 }
 
-// FileMTime returns file modified time and possible error.
-func FileMTime(file string) (int64, error) {
+// 获取文件修改时间
+func FileMTimeInt64(file string) (int64, error) {
 	f, err := os.Stat(file)
 	if err != nil {
 		return 0, err
@@ -65,7 +66,25 @@ func FileMTime(file string) (int64, error) {
 	return f.ModTime().Unix(), nil
 }
 
-// FileSize returns file size in bytes and possible error.
+// 获取文件修改时间
+func FileMTimeString(file string) (string, error) {
+	f, err := os.Stat(file)
+	if err != nil {
+		return "", err
+	}
+	return f.ModTime().Format("2006-01-02 15:04:05"), nil
+}
+
+// 获取文件修改时间
+func FileMTime(file string) (time.Time, error) {
+	f, err := os.Stat(file)
+	if err != nil {
+		return time.Time{}, err
+	}
+	return f.ModTime(), nil
+}
+
+// 获取文件大小
 func FileSize(file string) (int64, error) {
 	f, err := os.Stat(file)
 	if err != nil {
