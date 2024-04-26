@@ -83,10 +83,14 @@ func AESDecodeByte(data []byte, key []byte) ([]byte, error) {
 	blockMode.XORKeyStream(dest, data)
 	return dest, nil
 }
+
+// 加密
 func AESEncode(data string, key string) (string, error) {
 	out, err := AESEncodeByte([]byte(data), []byte(key))
 	return string(Base64EncodeByte(out)), err
 }
+
+//解密
 func AESDecode(data string, key string) (string, error) {
 	d, e := Base64DecodeByte([]byte(data))
 	if e != nil {

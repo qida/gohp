@@ -55,17 +55,26 @@ func RemoveRepeatedElement(arr []interface{}) (newArr []interface{}) {
 	return
 }
 
-func RemoveElement(arr []interface{}, elem interface{}) []interface{} {
-	if len(arr) == 0 {
-		return arr
-	}
-	for i, v := range arr {
-		if v == elem {
-			arr = append(arr[:i], arr[i+1:]...)
-			return RemoveElement(arr, elem)
+//	func RemoveElement(arr []interface{}, elem interface{}) []interface{} {
+//		if len(arr) == 0 {
+//			return arr
+//		}
+//		for i, v := range arr {
+//			if v == elem {
+//				arr = append(arr[:i], arr[i+1:]...)
+//				return RemoveElement(arr, elem)
+//			}
+//		}
+//		return arr
+//	}
+func RemoveElement[T comparable](arr []T, elem T) []T {
+	result := arr[:0]
+	for _, v := range arr {
+		if v != elem {
+			result = append(result, v)
 		}
 	}
-	return arr
+	return result
 }
 
 func RemoveZero(slice []interface{}) []interface{} {
