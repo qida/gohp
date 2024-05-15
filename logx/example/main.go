@@ -3,10 +3,11 @@ package main
 import (
 	"context"
 	"fmt"
+	"time"
+
 	"github.com/apache/rocketmq-client-go/v2"
 	"github.com/apache/rocketmq-client-go/v2/primitive"
 	"github.com/apache/rocketmq-client-go/v2/producer"
-	"time"
 )
 
 func main() {
@@ -128,7 +129,7 @@ func main() {
 }
 
 func test1() {
-	addr, err := primitive.NewNamesrvAddr("192.168.103.50:9876")
+	addr, err := primitive.NewNamesrvAddr("192.168.114.50:9876")
 	if err != nil {
 		panic(err)
 	}
