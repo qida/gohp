@@ -128,7 +128,7 @@ func main() {
 }
 
 func test1() {
-	addr, err := primitive.NewNamesrvAddr("192.168.103.50:9876")
+	addr, err := primitive.NewNamesrvAddr("192.168.114.50:9876")
 	if err != nil {
 		panic(err)
 	}
