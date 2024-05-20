@@ -155,3 +155,13 @@ func DateParse(dateString, format string) (time.Time, error) {
 func IsToday(t time.Time) bool {
 	return t.Format("2006-01-02") == time.Now().Format("2006-01-02")
 }
+
+// 大于今天
+func LgToday(t time.Time) bool {
+	return t.After(GetZeroTimeOfDay(t).AddDate(0, 0, 1))
+}
+
+// 小于今天
+func LtToday(t time.Time) bool {
+	return t.Before(GetZeroTimeOfDay(t))
+}
