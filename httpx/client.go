@@ -1,7 +1,6 @@
 package httpx
 
 import (
-	"context"
 	"fmt"
 	"log"
 	"os"
@@ -39,7 +38,7 @@ func NewClientHttp() *ClientHttp {
 		SetTimeout(time.Second * 10).
 		SetRetryCount(3).
 		SetRetryWaitTime(500 * time.Millisecond).
-		SetRetryMaxWaitTime(2 * time.Second)
+		SetRetryMaxWaitTime(20 * time.Second)
 	return &ClientHttp{
 		client: client,
 	}
@@ -95,7 +94,7 @@ func (t *ClientHttp) PostBody(url string, req, resp interface{}, header map[stri
 	return
 }
 
-func (t *ClientHttp) Post(ctx context.Context, url string, req map[string]string, resp interface{}, header map[string]string) (_err error) {
+func (t *ClientHttp) Post(url string, req map[string]string, resp interface{}, header map[string]string) (_err error) {
 	defer func() {
 		t.client.SetCloseConnection(true)
 	}()
@@ -113,7 +112,7 @@ func (t *ClientHttp) Post(ctx context.Context, url string, req map[string]string
 	}
 	return
 }
-func (t *ClientHttp) Get(ctx context.Context, url string, resp interface{}, header map[string]string) (_err error) {
+func (t *ClientHttp) Get(url string, resp interface{}, header map[string]string) (_err error) {
 	defer func() {
 		t.client.SetCloseConnection(true)
 	}()
@@ -131,7 +130,7 @@ func (t *ClientHttp) Get(ctx context.Context, url string, resp interface{}, head
 	return
 }
 
-func (t *ClientHttp) GetParams(ctx context.Context, url string, req map[string]string, resp interface{}, header map[string]string) (_err error) {
+func (t *ClientHttp) GetParams(url string, req map[string]string, resp interface{}, header map[string]string) (_err error) {
 	defer func() {
 		t.client.SetCloseConnection(true)
 	}()
