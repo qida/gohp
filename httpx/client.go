@@ -38,7 +38,7 @@ func NewClientHttp() *ClientHttp {
 		SetTimeout(time.Second * 10).
 		SetRetryCount(3).
 		SetRetryWaitTime(500 * time.Millisecond).
-		SetRetryMaxWaitTime(2 * time.Second)
+		SetRetryMaxWaitTime(20 * time.Second)
 	return &ClientHttp{
 		client: client,
 	}
