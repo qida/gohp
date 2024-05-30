@@ -187,7 +187,13 @@ func (c Client) Upload(localPath string, remotePath string) (err error) {
 }
 
 func (c Client) UploadWithProgress(localPath string, remotePath string, progress chan float64) (err error) {
-
+	fmt.Printf("Upload localPath:%s %s\n", localPath, remotePath)
+	defer func() {
+		if err != nil {
+			fmt.Printf("UploadWithProgress Error:%v\n", err)
+			progress <- -1
+		}
+	}()
 	local, err := os.Open(localPath)
 	if err != nil {
 		return
@@ -205,7 +211,7 @@ func (c Client) UploadWithProgress(localPath string, remotePath string, progress
 		return
 	}
 	defer remote.Close()
-	buf := make([]byte, 1024*1024) // 1MB buffer
+	buf := make([]byte, 2*1024*1024) // 1MB buffer
 	fs, _ := local.Stat()
 	var numWrite int
 	defer close(progress)
