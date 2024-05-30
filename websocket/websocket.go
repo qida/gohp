@@ -36,7 +36,7 @@ type ClientWS struct {
 
 type SubDevice struct {
 	DeviceId string
-	IdScheme int64
+	IdScheme int
 
 	ZoneId string
 }
