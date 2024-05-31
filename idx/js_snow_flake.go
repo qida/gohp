@@ -1,7 +1,6 @@
 package idx
 
 import (
-	"fmt"
 	"sync"
 	"time"
 )
