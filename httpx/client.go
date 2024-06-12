@@ -103,7 +103,7 @@ func (t *ClientHttp) Post(url string, req map[string]string, resp interface{}, h
 	}
 	var r *resty.Response
 	r, _err = t.client.R().
-		SetQueryParams(req).
+		SetFormData(req).
 		SetResult(resp).
 		Post(url)
 	if r.StatusCode() != 200 {
