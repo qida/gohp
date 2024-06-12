@@ -18,7 +18,11 @@ func TestEncode(t *testing.T) {
 		// Expected results.
 		wantDst string
 	}{
-		// TODO: Add test cases.
+		{
+			name:    "1",
+			src:     "sunqidas",
+			wantDst: "sunqidas",
+		},
 	}
 	for _, tt := range tests {
 		if gotDst := Encode(tt.src); gotDst != tt.wantDst {
@@ -36,7 +40,11 @@ func TestDecode(t *testing.T) {
 		// Expected results.
 		wantDst string
 	}{
-		// TODO: Add test cases.
+		{
+			name:    "1",
+			src:     "sunqidas",
+			wantDst: "sunqidas",
+		},
 	}
 	for _, tt := range tests {
 		if gotDst := Decode(tt.src); gotDst != tt.wantDst {

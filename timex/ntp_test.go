@@ -11,7 +11,6 @@ func TestTimeNtpCompare(t *testing.T) {
 		args    args
 		wantErr bool
 	}{
-		// TODO: Add test cases.
 		{
 			name:    "",
 			args:    args{date: "2021-01-12"},

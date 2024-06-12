@@ -16,7 +16,6 @@ func TestQQwry_Find(t *testing.T) {
 		args args
 		want string
 	}{
-		// TODO: Add test cases.
 		{
 			name: "test1",
 			q:    NewQQwry("qqwry.dat"),
@@ -39,7 +38,6 @@ func Test_getKey(t *testing.T) {
 		want    uint32
 		wantErr bool
 	}{
-		// TODO: Add test cases.
 		{
 			"", 0, false,
 		},

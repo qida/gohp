@@ -108,7 +108,6 @@ func main() {
 	//    ]
 	//}`
 
-	// TODO: DPanic will send email to administrator
 	//log.DPanic("this is panic", zap.Errors("error", []error{errors.New("error with div zero")}))
 	//log.Info("hi i am from debug", zap.Any("白居易", baijuyi))
 	//log.Info("hi i am from info")

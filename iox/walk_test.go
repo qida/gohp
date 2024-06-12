@@ -16,7 +16,6 @@ func TestWalkDir(t *testing.T) {
 		want_files []string
 		wantErr    bool
 	}{
-		// TODO: Add test cases.
 		{
 			name: "test1",
 			args: args{

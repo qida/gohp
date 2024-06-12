@@ -11,7 +11,6 @@ func TestBytes2ToInt16(t *testing.T) {
 		// Expected results.
 		want int16
 	}{
-		// TODO: Add test cases.
 		{"1 [2]byte Int16", []byte{0x00, 0x00}, 0},
 		{"2 [2]byte Int16", []byte{0x80, 0x00}, -32768},
 		{"3 [2]byte Int16", []byte{0xff, 0x00}, -256},
@@ -33,7 +32,6 @@ func TestBytes4ToInt32(t *testing.T) {
 		// Expected results.
 		want int32
 	}{
-		// TODO: Add test cases.
 		{"1 [4]byte Int32", []byte{0x00, 0x00, 0x00, 0x00}, 0},
 		{"2 [4]byte Int32", []byte{0x80, 0x00, 0x00, 0x00}, -2147483648},
 		{"3 [4]byte Int32", []byte{0xFF, 0xFF, 0xFF, 0xFF}, -1},
@@ -55,7 +53,6 @@ func TestBytes2ToUInt16(t *testing.T) {
 		// Expected results.
 		want uint16
 	}{
-		// TODO: Add test cases.
 		{"1 [2]byte UInt16", []byte{0x00, 0x00}, 0},
 		{"2 [2]byte UInt16", []byte{0x80, 0x00}, 32768},
 		{"3 [2]byte UInt16", []byte{0xFF, 0xFF}, 65535},
@@ -76,7 +73,6 @@ func TestBytes4ToUInt32(t *testing.T) {
 		// Expected results.
 		want uint32
 	}{
-		// TODO: Add test cases.
 		{"1 [4]byte UInt32", []byte{0x00, 0x00, 0x00, 0x00}, 0},
 		{"2 [4]byte UInt32", []byte{0x80, 0x00, 0x00, 0x00}, 2147483648},
 		{"3 [4]byte UInt32", []byte{0xFF, 0xFF, 0xFF, 0xFF}, 4294967295},
