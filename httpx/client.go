@@ -137,9 +137,9 @@ func (t *ClientHttp) GetParams(url string, req map[string]string, resp interface
 	for k, v := range header {
 		t.client.Header.Set(k, v)
 	}
-	t.client.SetQueryParams(req)
 	var r *resty.Response
 	r, _err = t.client.R().
+		SetQueryParams(req).
 		SetResult(resp).
 		Get(url)
 	if r.StatusCode() != 200 {
