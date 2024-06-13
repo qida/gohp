@@ -10,6 +10,7 @@ func TestClientHttp_UploadFile(t *testing.T) {
 		url        string
 		name_param string
 		file_path  string
+		resp       interface{}
 		params     map[string]string
 		header     map[string]string
 	}
@@ -56,6 +57,7 @@ func TestClientHttp_UploadFileFromBytes(t *testing.T) {
 		name_param string
 		file_name  string
 		file_data  []byte
+		resp       interface{}
 		params     map[string]string
 		header     map[string]string
 	}

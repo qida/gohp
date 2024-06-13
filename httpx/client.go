@@ -114,7 +114,7 @@ func (t *ClientHttp) Post(url string, req map[string]string, resp interface{}, h
 	return
 }
 
-func (t *ClientHttp) UploadFile(url string, name_param string, file_path string, params map[string]string, header map[string]string) (_err error) {
+func (t *ClientHttp) UploadFile(url string, name_param string, file_path string, params map[string]string, resp interface{}, header map[string]string) (_err error) {
 	defer func() {
 		t.client.SetCloseConnection(true)
 	}()
@@ -126,6 +126,7 @@ func (t *ClientHttp) UploadFile(url string, name_param string, file_path string,
 	r, _err := t.client.R().
 		SetFile(name_param, file_path).
 		SetFormData(params).
+		SetResult(resp).
 		Post(url)
 	if _err != nil {
 		return
@@ -137,7 +138,7 @@ func (t *ClientHttp) UploadFile(url string, name_param string, file_path string,
 	return
 }
 
-func (t *ClientHttp) UploadFileFromBytes(url string, name_param string, file_name string, file_data []byte, params map[string]string, header map[string]string) (_err error) {
+func (t *ClientHttp) UploadFileFromBytes(url string, name_param string, file_name string, file_data []byte, params map[string]string, resp interface{}, header map[string]string) (_err error) {
 	defer func() {
 		t.client.SetCloseConnection(true)
 	}()
@@ -151,6 +152,7 @@ func (t *ClientHttp) UploadFileFromBytes(url string, name_param string, file_nam
 	r, _err := t.client.R().
 		SetFileReader(name_param, file_name, reader).
 		SetFormData(params).
+		SetResult(resp).
 		Post(url)
 	if _err != nil {
 		return
