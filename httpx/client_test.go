@@ -40,7 +40,7 @@ func TestClientHttp_UploadFile(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if err := tt.tr.UploadFile(tt.args.url, tt.args.name_param, tt.args.file_path, tt.args.params, tt.args.header); (err != nil) != tt.wantErr {
+			if err := tt.tr.UploadFile(tt.args.url, tt.args.name_param, tt.args.file_path, tt.args.params, tt.args.resp, tt.args.header); (err != nil) != tt.wantErr {
 				t.Errorf("ClientHttp.UploadFile() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})
@@ -87,7 +87,7 @@ func TestClientHttp_UploadFileFromBytes(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if err := tt.tr.UploadFileFromBytes(tt.args.url, tt.args.name_param, tt.args.file_name, tt.args.file_data, tt.args.params, tt.args.header); (err != nil) != tt.wantErr {
+			if err := tt.tr.UploadFileFromBytes(tt.args.url, tt.args.name_param, tt.args.file_name, tt.args.file_data, tt.args.params, tt.args.resp, tt.args.header); (err != nil) != tt.wantErr {
 				t.Errorf("ClientHttp.UploadFileFromBytes() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})
