@@ -1,6 +1,7 @@
 package httpx
 
 import (
+	"bytes"
 	"fmt"
 	"log"
 	"os"
@@ -88,7 +89,7 @@ func (t *ClientHttp) PostBody(url string, req, resp interface{}, header map[stri
 		return
 	}
 	if r.StatusCode() != 200 {
-		_err = fmt.Errorf("服务器异常 %d %s", r.StatusCode(), r.Status())
+		_err = fmt.Errorf("服务器异常 [%s] %d %s", url, r.StatusCode(), r.Status())
 		return
 	}
 	return
@@ -107,11 +108,60 @@ func (t *ClientHttp) Post(url string, req map[string]string, resp interface{}, h
 		SetResult(resp).
 		Post(url)
 	if r.StatusCode() != 200 {
-		_err = fmt.Errorf("服务器异常 %d %s", r.StatusCode(), r.Status())
+		_err = fmt.Errorf("服务器异常 [%s] %d %s", url, r.StatusCode(), r.Status())
 		return
 	}
 	return
 }
+
+func (t *ClientHttp) UploadFile(url string, name_param string, file_path string, params map[string]string, header map[string]string) (_err error) {
+	defer func() {
+		t.client.SetCloseConnection(true)
+	}()
+	// 设置请求头
+	for k, v := range header {
+		t.client.Header.Set(k, v)
+	}
+	// 执行文件上传
+	r, _err := t.client.R().
+		SetFile(name_param, file_path).
+		SetFormData(params).
+		Post(url)
+	if _err != nil {
+		return
+	}
+	if r.StatusCode() != 200 {
+		_err = fmt.Errorf("服务器异常 [%s] %d %s", url, r.StatusCode(), r.Status())
+		return
+	}
+	return
+}
+
+func (t *ClientHttp) UploadFileFromBytes(url string, name_param string, file_name string, file_data []byte, params map[string]string, header map[string]string) (_err error) {
+	defer func() {
+		t.client.SetCloseConnection(true)
+	}()
+	// 设置请求头
+	for k, v := range header {
+		t.client.Header.Set(k, v)
+	}
+	// 创建一个bytes.Reader，用于读取fileData
+	reader := bytes.NewReader(file_data)
+	// 执行文件上传
+	r, _err := t.client.R().
+		SetFileReader(name_param, file_name, reader).
+		SetFormData(params).
+		Post(url)
+	if _err != nil {
+		return
+	}
+	if r.StatusCode() != 200 {
+		_err = fmt.Errorf("服务器异常 [%s] %d %s", url, r.StatusCode(), r.Status())
+		return
+	}
+	return
+}
+
 func (t *ClientHttp) Get(url string, resp interface{}, header map[string]string) (_err error) {
 	defer func() {
 		t.client.SetCloseConnection(true)
@@ -124,7 +174,7 @@ func (t *ClientHttp) Get(url string, resp interface{}, header map[string]string)
 		SetResult(resp).
 		Get(url)
 	if r.StatusCode() != 200 {
-		_err = fmt.Errorf("服务器异常 %d %s", r.StatusCode(), r.Status())
+		_err = fmt.Errorf("服务器异常 [%s] %d %s", url, r.StatusCode(), r.Status())
 		return
 	}
 	return
@@ -143,7 +193,7 @@ func (t *ClientHttp) GetParams(url string, req map[string]string, resp interface
 		SetResult(resp).
 		Get(url)
 	if r.StatusCode() != 200 {
-		_err = fmt.Errorf("服务器异常 %d %s", r.StatusCode(), r.Status())
+		_err = fmt.Errorf("服务器异常 [%s] %d %s", url, r.StatusCode(), r.Status())
 		return
 	}
 	return
