@@ -15,7 +15,6 @@ func TestGetZeroTimeOfDay(t *testing.T) {
 		args args
 		want time.Time
 	}{
-		// TODO: Add test cases.
 		{
 			name: "t",
 			args: args{d: time.Now()},
