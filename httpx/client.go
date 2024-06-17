@@ -155,6 +155,7 @@ func (t *ClientHttp) UploadFileFromBytes(url string, name_param string, file_nam
 		SetResult(resp).
 		Post(url)
 	if _err != nil {
+		_err = fmt.Errorf("服务器解析错误 [%s] %+v %v", url, _err, r.Result())
 		return
 	}
 	if r.StatusCode() != 200 {
