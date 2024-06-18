@@ -1,6 +1,7 @@
 package netx
 
 import (
+	"encoding/binary"
 	"errors"
 	"io"
 	"net"
@@ -108,4 +109,14 @@ func GetIpIn() string {
 		}
 	}
 	return ""
+}
+
+func IpToInt(ip_str string) uint32 {
+	return binary.BigEndian.Uint32(net.ParseIP(ip_str).To4())
+}
+
+func IntToIp(ip_int uint32) string {
+	b := make([]byte, 4)
+	binary.BigEndian.PutUint32(b, ip_int)
+	return net.IPv4(b[0], b[1], b[2], b[3]).String()
 }
