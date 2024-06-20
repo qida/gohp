@@ -100,7 +100,7 @@ func (c Client) Run(cmd string) ([]byte, error) {
 		sess *ssh.Session
 	)
 
-	if sess, err = c.NewSession(); err != nil {
+	if sess, err = c.Client.NewSession(); err != nil {
 		return nil, err
 	}
 
@@ -127,7 +127,7 @@ func (c Client) Command(name string, args ...string) (*Cmd, error) {
 		err  error
 	)
 
-	if sess, err = c.NewSession(); err != nil {
+	if sess, err = c.Client.NewSession(); err != nil {
 		return nil, err
 	}
 
