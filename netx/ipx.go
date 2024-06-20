@@ -26,7 +26,7 @@ func ExternalIP() (net.IP, error) {
 			return nil, err
 		}
 		for _, addr := range addrs {
-			ip := getIpFromAddr(addr)
+			ip := GetIpFromAddr(addr)
 			if ip == nil {
 				continue
 			}
@@ -36,7 +36,7 @@ func ExternalIP() (net.IP, error) {
 	return nil, errors.New("connected to the network?")
 }
 
-func getIpFromAddr(addr net.Addr) net.IP {
+func GetIpFromAddr(addr net.Addr) net.IP {
 	var ip net.IP
 	switch v := addr.(type) {
 	case *net.IPNet:
@@ -111,7 +111,7 @@ func GetIpIn() string {
 	return ""
 }
 
-func IpToInt(ip_str string) uint32 {
+func IpToUInt32(ip_str string) uint32 {
 	return binary.BigEndian.Uint32(net.ParseIP(ip_str).To4())
 }
 
@@ -119,4 +119,73 @@ func IntToIp(ip_int uint32) string {
 	b := make([]byte, 4)
 	binary.BigEndian.PutUint32(b, ip_int)
 	return net.IPv4(b[0], b[1], b[2], b[3]).String()
+}
+
+// 根据CIDR获取IP范围
+func GetCidrIpRangeIP(cidr string) (firstIP, lastIP net.IP, err error) {
+	ip, network, err := net.ParseCIDR(cidr)
+	if err != nil {
+		return nil, nil, err
+	}
+	// 计算网络地址（首个IP）
+	firstIP = ip.Mask(network.Mask)
+	// 计算广播地址（最后一个IP）
+	ones, _ := network.Mask.Size()
+	lastIP = make(net.IP, len(network.IP))
+	copy(lastIP, network.IP)
+	for i := ones / 8; i < len(lastIP); i++ {
+		lastIP[i] |= ^network.Mask[i]
+	}
+	lastIP[len(lastIP)-1]-- // 最后一个IP是广播地址减1
+	return firstIP, lastIP, nil
+}
+
+// 根据CIDR获取IP范围
+func GetCidrIpRangeString(cidr string) (_firstIP, _lastIP string, _err error) {
+	ip, network, err := net.ParseCIDR(cidr)
+	if err != nil {
+		_err = err
+		return
+	}
+	// 计算网络地址（首个IP）
+	_firstIP = ip.Mask(network.Mask).String()
+	// 计算广播地址（最后一个IP）
+	ones, _ := network.Mask.Size()
+	lastIP := make(net.IP, len(network.IP))
+	copy(lastIP, network.IP)
+	for i := ones / 8; i < len(lastIP); i++ {
+		lastIP[i] |= ^network.Mask[i]
+	}
+	lastIP[len(lastIP)-1]-- // 最后一个IP是广播地址减1
+	_lastIP = lastIP.String()
+	return
+}
+
+// 根据CIDR获取IP范围
+func GetCidrIpRangeUInt32(cidr string) (_firstIP, _lastIP uint32) {
+	ip, network, err := net.ParseCIDR(cidr)
+	if err != nil {
+		return
+	}
+	// 计算网络地址（首个IP）
+	_firstIP = IpToUInt32(ip.Mask(network.Mask).String())
+	// 计算广播地址（最后一个IP）
+	ones, _ := network.Mask.Size()
+	lastIP := make(net.IP, len(network.IP))
+	copy(lastIP, network.IP)
+	for i := ones / 8; i < len(lastIP); i++ {
+		lastIP[i] |= ^network.Mask[i]
+	}
+	lastIP[len(lastIP)-1]-- // 最后一个IP是广播地址减1
+	_lastIP = IpToUInt32(lastIP.String())
+	return
+}
+func ipcheck(ipstr, netstr string) (ok bool, err error) {
+	ipaddr := net.ParseIP(ipstr)
+	_, ipnet, err := net.ParseCIDR(netstr)
+	if err != nil {
+		return
+	}
+	ok = ipnet.IP.Equal(ipaddr.Mask(ipnet.Mask))
+	return
 }
