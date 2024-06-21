@@ -51,8 +51,8 @@ func humanateBytes(s uint64, base float64, sizes []string) string {
 	return fmt.Sprintf(f+"%s", val, suffix)
 }
 
-// HumaneFileSize calculates the file size and generate user-friendly string.
-func HumaneFileSize(s uint64) string {
+// FileSizeHumane calculates the file size and generate user-friendly string.
+func FileSizeHumane(s uint64) string {
 	sizes := []string{"B", "KB", "MB", "GB", "TB", "PB", "EB"}
 	return humanateBytes(s, 1024, sizes)
 }
@@ -72,7 +72,7 @@ func FileSizeString(file string) string {
 	if err != nil {
 		return "unknown"
 	}
-	return HumaneFileSize(uint64(f.Size()))
+	return FileSizeHumane(uint64(f.Size()))
 }
 
 // 获取文件修改时间
