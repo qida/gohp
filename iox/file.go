@@ -66,6 +66,15 @@ func FileSize(file string) (int64, error) {
 	return f.Size(), nil
 }
 
+// 获取文件大小带单位
+func FileSizeString(file string) string {
+	f, err := os.Stat(file)
+	if err != nil {
+		return "unknown"
+	}
+	return HumaneFileSize(uint64(f.Size()))
+}
+
 // 获取文件修改时间
 func FileMTimeInt64(file string) (int64, error) {
 	f, err := os.Stat(file)
