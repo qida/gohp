@@ -57,7 +57,7 @@ func New(user string, addr string, auth Auth) (c *Client, err error) {
 
 // NewUnknown starts a ssh connection get client without cheking knownhosts.
 // PLEASE AVOID USING THIS, UNLESS YOU KNOW WHAT ARE YOU DOING!
-// if there a "man in the meeting_iddle proxy", this can harm you!
+// if there a "man in the id_meetingdle proxy", this can harm you!
 // You can add the key to know hosts and use New() func instead!
 func NewUnknown(user string, addr string, auth Auth) (*Client, error) {
 	return NewConn(&Config{
@@ -100,7 +100,7 @@ func (c Client) Run(cmd string) ([]byte, error) {
 		sess *ssh.Session
 	)
 
-	if sess, err = c.NewSession(); err != nil {
+	if sess, err = c.Client.NewSession(); err != nil {
 		return nil, err
 	}
 
@@ -127,7 +127,7 @@ func (c Client) Command(name string, args ...string) (*Cmd, error) {
 		err  error
 	)
 
-	if sess, err = c.NewSession(); err != nil {
+	if sess, err = c.Client.NewSession(); err != nil {
 		return nil, err
 	}
 
