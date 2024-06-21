@@ -111,11 +111,6 @@ func GetIpIn() string {
 	return ""
 }
 
-<<<<<<< HEAD
-func Ip2Int(ip stirng) uint32 {
-	ipv4 := net.ParseIp(ip)
-	return binary.BigEndian.Uint32(ipv4.To4())
-=======
 func IpToUInt32(ip_str string) uint32 {
 	return binary.BigEndian.Uint32(net.ParseIP(ip_str).To4())
 }
@@ -193,5 +188,4 @@ func ipcheck(ipstr, netstr string) (ok bool, err error) {
 	}
 	ok = ipnet.IP.Equal(ipaddr.Mask(ipnet.Mask))
 	return
->>>>>>> 62208fcac2b43269134d7bfefd4ca739746e7e02
 }
