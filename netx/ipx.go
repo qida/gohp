@@ -111,6 +111,22 @@ func GetIpIn() string {
 	return ""
 }
 
+// 获取所有内网IP
+func GetIpsIn() (_ips []string) {
+	addrs, err := net.InterfaceAddrs()
+	if err != nil {
+		return
+	}
+	for _, address := range addrs {
+		if ipNet, ok := address.(*net.IPNet); ok && !ipNet.IP.IsLoopback() {
+			if ipNet.IP.To4() != nil {
+				_ips = append(_ips, ipNet.IP.String())
+			}
+		}
+	}
+	return
+}
+
 func IpToUInt32(ip_str string) uint32 {
 	return binary.BigEndian.Uint32(net.ParseIP(ip_str).To4())
 }
