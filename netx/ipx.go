@@ -178,9 +178,10 @@ func GetCidrIpRangeString(cidr string) (_firstIP, _lastIP string, _err error) {
 }
 
 // 根据CIDR获取IP范围
-func GetCidrIpRangeUInt32(cidr string) (_firstIP, _lastIP uint32) {
+func GetCidrIpRangeUInt32(cidr string) (_firstIP, _lastIP uint32, _err error) {
 	ip, network, err := net.ParseCIDR(cidr)
 	if err != nil {
+		_err = err
 		return
 	}
 	// 计算网络地址（首个IP）
