@@ -17,6 +17,7 @@ require (
 	github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0
 	github.com/gorilla/websocket v1.5.1
 	github.com/icepy/go-dingtalk v0.0.0-20180430151047-e8997a391814
+	github.com/jordan-wright/email v4.0.1-0.20210109023952-943e75fe5223+incompatible
 	github.com/mholt/archiver v3.1.1+incompatible
 	github.com/minio/minio-go/v7 v7.0.63
 	github.com/nfnt/resize v0.0.0-20180221191011-83c6a9932646
