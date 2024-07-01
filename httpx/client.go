@@ -201,3 +201,6 @@ func (t *ClientHttp) GetParams(url string, req map[string]string, resp interface
 	}
 	return
 }
+
+
+

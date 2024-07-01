@@ -35,15 +35,19 @@ func NewEmail(host, port, username, password string) *Email {
 
 func (t *Email) SendEmail(mail Mail) (_err error) {
 	e := &email.Email{
-		From:    fmt.Sprintf("发送者名字<%s>", mail.From),
+		From:    fmt.Sprintf("<%s>", mail.From),
 		To:      mail.To,
 		Subject: mail.Subject,
-		Text:    mail.Text,
-		HTML:    mail.HTML,
+	}
+	if len(mail.Text) != 0 {
+		e.Text = mail.Text
+	}
+	if len(mail.Text) != 0 {
+		e.HTML = mail.HTML
 	}
 	_err = e.Send(net.JoinHostPort(t.Host, t.Port), t.Auth)
 	if _err != nil {
-		log.Fatal(_err)
+		log.Fatal("发送邮件失败：", _err)
 	}
 	return
 }
