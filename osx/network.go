@@ -39,7 +39,7 @@ func NetSpeed(speed chan float64) {
 	}
 }
 
-// findInterfaceByName 在网络接口列表中根据名称查找对应接口
+// 在网络接口列表中根据名称查找对应接口
 func findInterfaceByName(interfaces []net.IOCountersStat, name string) (net.IOCountersStat, bool) {
 	for _, iface := range interfaces {
 		if iface.Name == name {
@@ -49,7 +49,7 @@ func findInterfaceByName(interfaces []net.IOCountersStat, name string) (net.IOCo
 	return net.IOCountersStat{}, false
 }
 
-// calculateUploadSpeed 计算上传速率
+// 计算上传速率
 func calculateUploadSpeed(prevSent, currSent uint64, duration time.Duration) float64 {
 	deltaBytes := currSent - prevSent
 	return float64(deltaBytes) / float64(duration.Seconds())
