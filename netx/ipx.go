@@ -152,7 +152,7 @@ func GetCidrIpRangeIP(cidr string) (firstIP, lastIP net.IP, err error) {
 	for i := ones / 8; i < len(lastIP); i++ {
 		lastIP[i] |= ^network.Mask[i]
 	}
-	lastIP[len(lastIP)-1]-- // 最后一个IP是广播地址减1
+	// lastIP[len(lastIP)-1]-- // 最后一个IP是广播地址减1
 	return firstIP, lastIP, nil
 }
 
@@ -172,7 +172,7 @@ func GetCidrIpRangeString(cidr string) (_firstIP, _lastIP string, _err error) {
 	for i := ones / 8; i < len(lastIP); i++ {
 		lastIP[i] |= ^network.Mask[i]
 	}
-	lastIP[len(lastIP)-1]-- // 最后一个IP是广播地址减1
+	// lastIP[len(lastIP)-1]-- // 最后一个IP是广播地址减1
 	_lastIP = lastIP.String()
 	return
 }
@@ -193,11 +193,12 @@ func GetCidrIpRangeUInt32(cidr string) (_firstIP, _lastIP uint32, _err error) {
 	for i := ones / 8; i < len(lastIP); i++ {
 		lastIP[i] |= ^network.Mask[i]
 	}
-	lastIP[len(lastIP)-1]-- // 最后一个IP是广播地址减1
+	// lastIP[len(lastIP)-1]-- // 最后一个IP是广播地址减1
 	_lastIP = IpToUInt32(lastIP.String())
 	return
 }
-func ipcheck(ipstr, netstr string) (ok bool, err error) {
+
+func IsIPinCIDR(ipstr, netstr string) (ok bool, err error) {
 	ipaddr := net.ParseIP(ipstr)
 	_, ipnet, err := net.ParseCIDR(netstr)
 	if err != nil {
