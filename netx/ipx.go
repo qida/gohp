@@ -158,6 +158,10 @@ func GetCidrIpRangeIP(cidr string) (firstIP, lastIP net.IP, err error) {
 
 // 根据CIDR获取IP范围
 func GetCidrIpRangeString(cidr string) (_firstIP, _lastIP string, _err error) {
+	if cidr=="" {
+		_err = errors.New("参数为空")
+		return
+	}
 	ip, network, err := net.ParseCIDR(cidr)
 	if err != nil {
 		_err = err
