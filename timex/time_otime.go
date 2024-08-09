@@ -52,3 +52,11 @@ func (t *OTime) IsNull() bool {
 	}
 	return t.Time.UnixNano() == 0
 }
+
+func (t *OTime) Add(td time.Duration) error {
+	if t == nil {
+		return fmt.Errorf("time is nil")
+	}
+	*t = OTime{Time: t.Time.Add(td)}
+	return nil
+}
