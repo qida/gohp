@@ -18,9 +18,11 @@ type FileLogger struct {
 func (l *FileLogger) Errorf(format string, v ...interface{}) {
 	l.file.WriteString(fmt.Sprintf(format, v...))
 }
+
 func (l *FileLogger) Warnf(format string, v ...interface{}) {
 	l.file.WriteString(fmt.Sprintf(format, v...))
 }
+
 func (l *FileLogger) Debugf(format string, v ...interface{}) {
 	l.file.WriteString(fmt.Sprintf(format, v...))
 }
@@ -29,8 +31,10 @@ type ClientHttp struct {
 	client *resty.Client
 }
 
-var logger *FileLogger
-var once sync.Once
+var (
+	logger *FileLogger
+	once   sync.Once
+)
 
 func NewClientHttp() *ClientHttp {
 	client := resty.New().SetContentLength(true).
@@ -44,6 +48,7 @@ func NewClientHttp() *ClientHttp {
 		client: client,
 	}
 }
+
 func (t *ClientHttp) Debug(debug bool) *ClientHttp {
 	t.client.SetDebug(debug)
 	return t
@@ -55,7 +60,7 @@ func (t *ClientHttp) LogFile() *ClientHttp {
 			os.Mkdir("./log", os.ModePerm)
 		}
 		// 创建日志文件
-		logFile, err := os.OpenFile("./log/go-resty.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
+		logFile, err := os.OpenFile("./log/go-resty.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0o666)
 		if err != nil {
 			log.Fatalf("Failed to open log file: %v", err)
 		}
@@ -63,7 +68,7 @@ func (t *ClientHttp) LogFile() *ClientHttp {
 		logger = &FileLogger{file: logFile}
 	})
 	t.client.SetLogger(logger)
-	//t.client.SetLogger(log.New(logFile, "", log.LstdFlags))
+	// t.client.SetLogger(log.New(logFile, "", log.LstdFlags))
 	return t
 }
 
@@ -142,11 +147,9 @@ func (t *ClientHttp) UploadFileFromBytes(url string, name_param string, file_nam
 	defer func() {
 		t.client.SetCloseConnection(true)
 	}()
-	// 设置请求头
 	for k, v := range header {
 		t.client.Header.Set(k, v)
 	}
-	// 创建一个bytes.Reader，用于读取fileData
 	reader := bytes.NewReader(file_data)
 	// 执行文件上传
 	r, _err := t.client.R().
@@ -154,10 +157,6 @@ func (t *ClientHttp) UploadFileFromBytes(url string, name_param string, file_nam
 		SetFormData(params).
 		SetResult(resp).
 		Post(url)
-	if _err != nil {
-		_err = fmt.Errorf("服务器解析错误 [%s] Result:[%+v] Error:%+v", url, r.Result(), _err)
-		return
-	}
 	if r.StatusCode() != 200 {
 		_err = fmt.Errorf("服务器异常 [%s] %d %s", url, r.StatusCode(), r.Status())
 		return
@@ -201,6 +200,3 @@ func (t *ClientHttp) GetParams(url string, req map[string]string, resp interface
 	}
 	return
 }
-
-
-
