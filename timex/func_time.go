@@ -7,9 +7,7 @@ import (
 	"time"
 )
 
-var (
-	LOC_ZONE = time.FixedZone("CST", 8*3600) // 东八区
-)
+var LOC_ZONE = time.FixedZone("CST", 8*3600) // 东八区
 
 // 获取零日期 舍去秒 2000-01-01T15:04:00+08:00
 func UpdateTime(src *time.Time) (_err error) {
@@ -60,6 +58,7 @@ func GetDateTimeHour(src time.Time) time.Time {
 }
 
 // 获取零日期整数 2023-01-02T00:00:00+08:00
+
 func GetDate(src time.Time) time.Time {
 	if !src.IsZero() {
 		return time.Date(src.Year(), src.Month(), src.Day(), 0, 0, 0, 0, LOC_ZONE)
@@ -68,6 +67,7 @@ func GetDate(src time.Time) time.Time {
 }
 
 // 获取指定日期合成后的时间  2023-01-02T15:04:05+08:00
+
 func GetDateTime(date time.Time, src time.Time) (dst time.Time, _err error) {
 	if !src.IsZero() {
 		dst = time.Date(
