@@ -1,7 +1,6 @@
 package qywx
 
 import (
-	"context"
 	"fmt"
 	"time"
 
@@ -61,13 +60,12 @@ type QYWX struct {
 //		return
 //	}
 func NewQywx(corpid string, corpsecret string) (qy *QYWX, _err error) {
-
 	var msgAccessToken MsgAccessToken
-	var req = map[string]string{
+	req := map[string]string{
 		"corpid":     corpid,
 		"corpsecret": corpsecret,
 	}
-	_err = httpx.NewClientHttp().Debug(true).GetParams(context.TODO(),
+	_err = httpx.NewClientHttp().Debug(true).GetParams(
 		"https://qyapi.weixin.qq.com/cgi-bin/gettoken", req, &msgAccessToken, nil)
 	if _err != nil {
 		fmt.Printf("获取token出错：%+v\r\n", _err)
