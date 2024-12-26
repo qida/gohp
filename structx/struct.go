@@ -1,6 +1,7 @@
 package structx
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
 	"reflect"
@@ -85,6 +86,12 @@ func CopyContent(master interface{}, second interface{}) (m map[string]interface
 		}
 	}
 	return
+}
+
+// 对象转JSON字符串
+func JsonToStr(i interface{}) string {
+	byteI, _ := json.Marshal(&i)
+	return string(byteI)
 }
 
 func RequestVerify(content interface{}, force ...string) (_err error) {
