@@ -170,7 +170,7 @@ func RequestSpaceTrim(obj interface{}) (_err error) {
 		// 如果字段是结构体，则递归调用该方法来处理其所有字段
 		if field.Kind() == reflect.Struct {
 			fieldVal := field.Addr().Interface()
-			TrimSpaceRequest(fieldVal)
+			RequestSpaceTrim(fieldVal)
 		}
 	}
 	return
