@@ -6,7 +6,7 @@ import (
 	"time"
 )
 
-const OTimeFormat = "15:04:05"
+const oTimeFormat = "15:04:05"
 
 type OTime struct {
 	time.Time
@@ -17,7 +17,7 @@ func (t *OTime) UnmarshalJSON(data []byte) (err error) {
 		*t = OTime{Time: time.Time{}}
 		return
 	}
-	now, err := time.ParseInLocation(`"`+OTimeFormat+`"`, string(data), LOC_ZONE)
+	now, err := time.ParseInLocation(`"`+oTimeFormat+`"`, string(data), LOC_ZONE)
 	*t = OTime{Time: now}
 	return
 }
@@ -26,7 +26,7 @@ func (t OTime) MarshalJSON() ([]byte, error) {
 	if t.Time.IsZero() {
 		return []byte("null"), nil
 	}
-	formatted := fmt.Sprintf("\"%s\"", t.Format(OTimeFormat))
+	formatted := fmt.Sprintf("\"%s\"", t.Format(oTimeFormat))
 	return []byte(formatted), nil
 }
 
