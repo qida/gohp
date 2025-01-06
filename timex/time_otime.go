@@ -6,10 +6,16 @@ import (
 	"time"
 )
 
-const oTimeFormat = "15:04:05"
+const OTimeFormat = "15:04:05"
 
 type OTime struct {
 	time.Time
+}
+
+func NewOTime(date string) OTime {
+	var tt time.Time
+	tt, _ = time.ParseInLocation(OTimeFormat, date, LOC_ZONE)
+	return OTime{Time: tt}
 }
 
 func (t *OTime) UnmarshalJSON(data []byte) (err error) {
@@ -17,7 +23,7 @@ func (t *OTime) UnmarshalJSON(data []byte) (err error) {
 		*t = OTime{Time: time.Time{}}
 		return
 	}
-	now, err := time.ParseInLocation(`"`+oTimeFormat+`"`, string(data), LOC_ZONE)
+	now, err := time.ParseInLocation(`"`+OTimeFormat+`"`, string(data), LOC_ZONE)
 	*t = OTime{Time: now}
 	return
 }
@@ -26,7 +32,7 @@ func (t OTime) MarshalJSON() ([]byte, error) {
 	if t.Time.IsZero() {
 		return []byte("null"), nil
 	}
-	formatted := fmt.Sprintf("\"%s\"", t.Format(oTimeFormat))
+	formatted := fmt.Sprintf("\"%s\"", t.Format(OTimeFormat))
 	return []byte(formatted), nil
 }
 
@@ -46,6 +52,7 @@ func (t *OTime) Scan(v interface{}) error {
 	}
 	return fmt.Errorf("can not convert %v to OTime", v)
 }
+
 func (t *OTime) IsNull() bool {
 	if t == nil {
 		return true

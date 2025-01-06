@@ -7,7 +7,7 @@ import (
 )
 
 const (
-	oDateTimeFormat = "2006-01-02 15:04:05"
+	ODateTimeFormat = "2006-01-02 15:04:05"
 )
 
 type ODateTime struct {
@@ -20,12 +20,9 @@ func (t *ODateTime) UnmarshalJSON(data []byte) (_err error) {
 		return
 	}
 	var tt time.Time
-	tt, _err = time.ParseInLocation(`"`+oDateTimeFormat+`"`, string(data), LOC_ZONE)
+	tt, _err = time.ParseInLocation(`"`+ODateTimeFormat+`"`, string(data), LOC_ZONE)
 	if _err != nil {
 		tt, _err = time.ParseInLocation(`"`+time.RFC3339+`"`, string(data), LOC_ZONE) // 兼容格式
-	}
-	if _err != nil {
-		return
 	}
 	*t = ODateTime{Time: tt}
 	return
@@ -35,7 +32,7 @@ func (t ODateTime) MarshalJSON() ([]byte, error) {
 	if t.Time.IsZero() {
 		return []byte("null"), nil
 	}
-	formatted := fmt.Sprintf("\"%s\"", t.Format(oDateTimeFormat))
+	formatted := fmt.Sprintf("\"%s\"", t.Format(ODateTimeFormat))
 	return []byte(formatted), nil
 }
 
@@ -53,5 +50,5 @@ func (t *ODateTime) Scan(v interface{}) error {
 		*t = ODateTime{Time: value}
 		return nil
 	}
-	return fmt.Errorf("can not convert %v to ODateTime", v)
+	return fmt.Errorf("can not convert %v to timestamp", v)
 }
