@@ -39,8 +39,6 @@ func UpdateHour(src *time.Time) (_err error) {
 	return
 }
 
-
-
 // 修改为日期整时 2023-01-02T15:00:00+08:00
 func UpdateDateTimeHour(src *time.Time) (_err error) {
 	if !src.IsZero() {
@@ -51,7 +49,6 @@ func UpdateDateTimeHour(src *time.Time) (_err error) {
 	return
 }
 
-
 // 获取日期分整数 2023-01-02T15:01:00+08:00
 func GetDateTimeMinute(src time.Time) time.Time {
 	if !src.IsZero() {
@@ -59,7 +56,6 @@ func GetDateTimeMinute(src time.Time) time.Time {
 	}
 	return time.Time{}
 }
-
 // 获取日期时整数 2023-01-02T15:00:00+08:00
 func GetDateTimeHour(src time.Time) time.Time {
 	if !src.IsZero() {
@@ -67,7 +63,6 @@ func GetDateTimeHour(src time.Time) time.Time {
 	}
 	return time.Time{}
 }
-
 
 // 获取零日期整数 2023-01-02T00:00:00+08:00
 

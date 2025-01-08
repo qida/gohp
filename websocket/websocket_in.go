@@ -40,6 +40,7 @@ func (t *MapWSSub) Add(client_ws *ClientWS) {
 		t.MapClientWSSubs[client_ws.KeySub] = subs
 	}
 }
+
 func (t *MapLink) Add(client_ws *ClientWS) {
 	t.Lock.Lock()
 	defer t.Lock.Unlock()
@@ -54,18 +55,18 @@ func (t *MapLink) Add(client_ws *ClientWS) {
 }
 
 func (t *MapWSNet) Delete(client_ws *ClientWS) {
-	// logger.Debugf("MapWSNet Start Delete:%s ", client_ws.KeyNet)
+	// log.Debugf("MapWSNet Start Delete:%s ", client_ws.KeyNet)
 
 	t.Lock.Lock()
 	defer t.Lock.Unlock()
 
 	delete(t.MapClientWSNets, client_ws.KeyNet)
 
-	// logger.Debugf("MapWSNet Delete:%s ", client_ws.KeyNet)
+	// log.Debugf("MapWSNet Delete:%s ", client_ws.KeyNet)
 }
 
 func (t *MapWSSub) Delete(client_ws *ClientWS) {
-	// logger.Debugf("MapWSSub Start Delete:%s ", client_ws.KeySub)
+	// log.Debugf("MapWSSub Start Delete:%s ", client_ws.KeySub)
 
 	t.Lock.Lock()
 	defer t.Lock.Unlock()
@@ -76,10 +77,11 @@ func (t *MapWSSub) Delete(client_ws *ClientWS) {
 			t.MapClientWSSubs[client_ws.KeySub] = subs
 		}
 	}
-	// logger.Debugf("MapWSSub Delete:%s ", client_ws.KeySub)
+	// log.Debugf("MapWSSub Delete:%s ", client_ws.KeySub)
 }
+
 func (t *MapLink) Delete(client_ws *ClientWS) {
-	// logger.Debugf("MapLink Start Delete:%s ", client_ws.KeySub)
+	// log.Debugf("MapLink Start Delete:%s ", client_ws.KeySub)
 
 	t.Lock.Lock()
 	defer t.Lock.Unlock()
@@ -90,5 +92,5 @@ func (t *MapLink) Delete(client_ws *ClientWS) {
 			t.MapLinkWSSubs[client_ws.KeySub] = subs
 		}
 	}
-	// logger.Debugf("MapLink Delete:%s ", client_ws.KeySub)
+	// log.Debugf("MapLink Delete:%s ", client_ws.KeySub)
 }
