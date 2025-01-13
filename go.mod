@@ -3,6 +3,7 @@ module github.com/qida/gohp
 go 1.19
 
 require (
+	github.com/Lofanmi/pinyin-golang v0.0.0-20211114132645-1db892057f20
 	github.com/Shopify/sarama v1.38.1
 	github.com/aliyun/alibaba-cloud-sdk-go v1.62.596
 	github.com/aliyun/aliyun-oss-go-sdk v3.0.2+incompatible
@@ -17,6 +18,7 @@ require (
 	github.com/goccy/go-json v0.10.2
 	github.com/gogf/gf v1.16.9
 	github.com/gogf/gf/v2 v2.7.4
+	github.com/golang-jwt/jwt/v5 v5.2.1
 	github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0
 	github.com/gorilla/websocket v1.5.1
 	github.com/icepy/go-dingtalk v0.0.0-20180430151047-e8997a391814
@@ -43,6 +45,7 @@ require (
 	golang.org/x/crypto v0.22.0
 	golang.org/x/image v0.14.0
 	golang.org/x/net v0.24.0
+	golang.org/x/term v0.19.0
 	golang.org/x/text v0.14.0
 	gopkg.in/gomail.v2 v2.0.0-20160411212932-81ebce5c23df
 	gopkg.in/natefinch/lumberjack.v2 v2.2.1

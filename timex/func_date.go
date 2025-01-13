@@ -165,3 +165,20 @@ func LgToday(t time.Time) bool {
 func LtToday(t time.Time) bool {
 	return t.Before(GetZeroTimeOfDay(t))
 }
+
+// 转为本地日期
+func ParseWithLocation(timeStr string) (time.Time, error) {
+	lt, err := time.ParseInLocation(time.RFC3339, timeStr, time.FixedZone("CST", 8*3600))
+	if err != nil {
+		return time.Now(), nil
+	}
+	return lt, nil
+}
+
+func GetMonthStartAndEnd(date time.Time) (time.Time, time.Time) {
+	// 获取日期所在月的第一天
+	monthStart := time.Date(date.Year(), date.Month(), 1, 0, 0, 0, 0, date.Location())
+	// 获取日期所在月的最后一天
+	monthEnd := monthStart.AddDate(0, 1, 0)
+	return monthStart, monthEnd
+}
