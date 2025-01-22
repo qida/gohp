@@ -1,11 +1,12 @@
 package httpx
 
 import (
+	"crypto/rand"
+	"encoding/base64"
 	"errors"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
-	"golang.org/x/exp/rand"
 )
 
 type Claims struct {
@@ -16,15 +17,12 @@ type Claims struct {
 // 签名密钥
 const sign_key = "hello jwt"
 
-// 随机字符串
-var letters = []rune("0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
-
-func randStr(str_len int) string {
-	rand_bytes := make([]rune, str_len)
-	for i := range rand_bytes {
-		rand_bytes[i] = letters[rand.Intn(len(letters))]
+func randStr(strLen int) string {
+	bytes := make([]byte, strLen)
+	if _, err := rand.Read(bytes); err != nil {
+		return ""
 	}
-	return string(rand_bytes)
+	return base64.URLEncoding.EncodeToString(bytes)[:strLen]
 }
 
 // 生成 JWT
@@ -62,10 +60,10 @@ func JWTValidate(token_string string) (Claims, error) {
 		return Claims{}, errors.New("claim invalid")
 	}
 
-	claims, ok := token.Claims.(Claims)
+	claims, ok := token.Claims.(*Claims)
 	if !ok {
 		return Claims{}, errors.New("invalid claim type")
 	}
 
-	return claims, nil
+	return *claims, nil
 }

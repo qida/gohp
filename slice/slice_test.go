@@ -27,107 +27,78 @@
 package slice
 
 import (
-	"fmt"
 	"testing"
 
 	. "github.com/smartystreets/goconvey/convey"
 )
 
-func TestAppendStr(t *testing.T) {
-	Convey("Append a string to a slice with no duplicates", t, func() {
-		s := []string{"a"}
-
-		Convey("Append a string that does not exist in slice", func() {
-			s = AppendStr(s, "b")
-			So(len(s), ShouldEqual, 2)
+func TestRemoveDuplicate(t *testing.T) {
+	Convey("Remove duplicates from a slice of strings", t, func() {
+		Convey("Remove duplicates from a slice with duplicates", func() {
+			input := []string{"a", "b", "a", "c", "b"}
+			expected := []string{"a", "b", "c"}
+			result := RemoveDuplicate(input)
+			So(result, ShouldResemble, expected)
 		})
 
-		Convey("Append a string that does exist in slice", func() {
-			s = AppendStr(s, "b")
-			So(len(s), ShouldEqual, 2)
-		})
-	})
-}
-
-func TestCompareSliceStr(t *testing.T) {
-	Convey("Compares two 'string' type slices with elements and order", t, func() {
-		Convey("Compare two slices that do have same elements and order", func() {
-			So(CompareSliceStr(
-				[]string{"1", "2", "3"}, []string{"1", "2", "3"}), ShouldBeTrue)
+		Convey("Remove duplicates from a slice with no duplicates", func() {
+			input := []string{"a", "b", "c"}
+			expected := []string{"a", "b", "c"}
+			result := RemoveDuplicate(input)
+			So(result, ShouldResemble, expected)
 		})
 
-		Convey("Compare two slices that do have same elements but does not have same order", func() {
-			So(!CompareSliceStr(
-				[]string{"2", "1", "3"}, []string{"1", "2", "3"}), ShouldBeTrue)
-		})
-
-		Convey("Compare two slices that have different number of elements", func() {
-			So(!CompareSliceStr(
-				[]string{"2", "1"}, []string{"1", "2", "3"}), ShouldBeTrue)
+		Convey("Remove duplicates from an empty slice", func() {
+			input := []string{}
+			expected := []string{}
+			result := RemoveDuplicate(input)
+			So(result, ShouldResemble, expected)
 		})
 	})
-}
 
-func TestCompareSliceStrU(t *testing.T) {
-	Convey("Compare two 'string' type slices with elements and ignore the order", t, func() {
-		Convey("Compare two slices that do have same elements and order", func() {
-			So(CompareSliceStrU(
-				[]string{"1", "2", "3"}, []string{"1", "2", "3"}), ShouldBeTrue)
+	Convey("Remove duplicates from a slice of integers", t, func() {
+		Convey("Remove duplicates from a slice with duplicates", func() {
+			input := []int{1, 2, 1, 3, 2}
+			expected := []int{1, 2, 3}
+			result := RemoveDuplicate(input)
+			So(result, ShouldResemble, expected)
 		})
 
-		Convey("Compare two slices that do have same elements but does not have same order", func() {
-			So(CompareSliceStrU(
-				[]string{"2", "1", "3"}, []string{"1", "2", "3"}), ShouldBeTrue)
+		Convey("Remove duplicates from a slice with no duplicates", func() {
+			input := []int{1, 2, 3}
+			expected := []int{1, 2, 3}
+			result := RemoveDuplicate(input)
+			So(result, ShouldResemble, expected)
 		})
 
-		Convey("Compare two slices that have different number of elements", func() {
-			So(!CompareSliceStrU(
-				[]string{"2", "1"}, []string{"1", "2", "3"}), ShouldBeTrue)
+		Convey("Remove duplicates from an empty slice", func() {
+			input := []int{}
+			expected := []int{}
+			result := RemoveDuplicate(input)
+			So(result, ShouldResemble, expected)
 		})
 	})
-}
 
-func BenchmarkAppendStr(b *testing.B) {
-	s := []string{"a"}
-	for i := 0; i < b.N; i++ {
-		s = AppendStr(s, fmt.Sprint(b.N%3))
-	}
-}
-
-func BenchmarkCompareSliceStr(b *testing.B) {
-	s1 := []string{"1", "2", "3"}
-	s2 := []string{"1", "2", "3"}
-	for i := 0; i < b.N; i++ {
-		CompareSliceStr(s1, s2)
-	}
-}
-
-func BenchmarkCompareSliceStrU(b *testing.B) {
-	s1 := []string{"1", "4", "2", "3"}
-	s2 := []string{"1", "2", "3", "4"}
-	for i := 0; i < b.N; i++ {
-		CompareSliceStrU(s1, s2)
-	}
-}
-
-func TestFindSliceContainsStr(t *testing.T) {
-	type args struct {
-		sl  []string
-		str string
-	}
-	tests := []struct {
-		name string
-		args args
-		want bool
-	}{
-		{name: "TestFindSliceContainsStr", args: args{[]string{"1", "2", "3"}, "2"}, want: true},
-		{name: "TestFindSliceContainsStr", args: args{[]string{"README.md", "表面结构字.json", "2", "3"}, "doc/chinese-poetry/全唐诗/表面结构字.json"}, want: true},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if got := FindSliceContainsStr(tt.args.sl, tt.args.str); got != tt.want {
-				t.Errorf("FindSliceContainsStr() = %v, want %v", got, tt.want)
-			}
+	Convey("Remove duplicates from a slice of float64", t, func() {
+		Convey("Remove duplicates from a slice with duplicates", func() {
+			input := []float64{1.1, 2.2, 1.1, 3.3, 2.2}
+			expected := []float64{1.1, 2.2, 3.3}
+			result := RemoveDuplicate(input)
+			So(result, ShouldResemble, expected)
 		})
-	}
+
+		Convey("Remove duplicates from a slice with no duplicates", func() {
+			input := []float64{1.1, 2.2, 3.3}
+			expected := []float64{1.1, 2.2, 3.3}
+			result := RemoveDuplicate(input)
+			So(result, ShouldResemble, expected)
+		})
+
+		Convey("Remove duplicates from an empty slice", func() {
+			input := []float64{}
+			expected := []float64{}
+			result := RemoveDuplicate(input)
+			So(result, ShouldResemble, expected)
+		})
+	})
 }

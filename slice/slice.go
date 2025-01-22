@@ -4,11 +4,11 @@ import (
 	"fmt"
 	"math"
 	"reflect"
-	"strings"
 	"time"
 )
 
-func FindElement(arr []interface{}) (newArr []interface{}) {
+// 数组元素去重复
+func RemoveRepeat(arr []interface{}) (newArr []interface{}) {
 	newArr = make([]interface{}, 0)
 	for i := 0; i < len(arr); i++ {
 		repeat := false
@@ -25,6 +25,7 @@ func FindElement(arr []interface{}) (newArr []interface{}) {
 	return
 }
 
+// 数组元素去重复Map
 func RemoveDuplicate[T string | int | float64](duplicateSlice []T) []T {
 	set := map[T]interface{}{}
 	res := []T{}
@@ -38,35 +39,7 @@ func RemoveDuplicate[T string | int | float64](duplicateSlice []T) []T {
 	return res
 }
 
-func RemoveRepeatedElement(arr []interface{}) (newArr []interface{}) {
-	newArr = make([]interface{}, 0)
-	for i := 0; i < len(arr); i++ {
-		repeat := false
-		for j := i + 1; j < len(arr); j++ {
-			if arr[i] == arr[j] {
-				repeat = true
-				break
-			}
-		}
-		if !repeat {
-			newArr = append(newArr, arr[i])
-		}
-	}
-	return
-}
-
-//	func RemoveElement(arr []interface{}, elem interface{}) []interface{} {
-//		if len(arr) == 0 {
-//			return arr
-//		}
-//		for i, v := range arr {
-//			if v == elem {
-//				arr = append(arr[:i], arr[i+1:]...)
-//				return RemoveElement(arr, elem)
-//			}
-//		}
-//		return arr
-//	}
+// 删除数组中指定元素
 func RemoveElement[T comparable](arr []T, elem T) []T {
 	result := arr[:0]
 	for _, v := range arr {
@@ -77,12 +50,13 @@ func RemoveElement[T comparable](arr []T, elem T) []T {
 	return result
 }
 
+// 删除数组中零元素
 func RemoveZero(slice []interface{}) []interface{} {
 	if len(slice) == 0 {
 		return slice
 	}
 	for i, v := range slice {
-		if IfZero(v) {
+		if ifZero(v) {
 			slice = append(slice[:i], slice[i+1:]...)
 			return RemoveZero(slice)
 		}
@@ -91,7 +65,7 @@ func RemoveZero(slice []interface{}) []interface{} {
 }
 
 // 判断一个值是否为零值，只支持string,float,int,time 以及其各自的指针，"%"和"%%"也属于零值范畴，场景是like语句
-func IfZero(arg interface{}) bool {
+func ifZero(arg interface{}) bool {
 	if arg == nil {
 		return true
 	}
@@ -121,85 +95,70 @@ func IfZero(arg interface{}) bool {
 	return false
 }
 
-// 去重合并
-func FindAddString(old, now []string) (diff []string) {
-	for i := 0; i < len(old); i++ {
-		for j := 0; j < len(now); j++ {
-			if old[i] == now[j] {
-				break
-			}
-		}
-		diff = append(diff, old[i])
-	}
-	return
-}
-
-// AppendStr appends string to slice with no duplicates.
-func AppendStr(strs []string, str string) []string {
-	for _, s := range strs {
-		if s == str {
-			return strs
+// 2个数组合并并去重
+// Merge 是一个泛型函数，用于合并两个切片并去重
+func Merge[T comparable](old, now []T) (diff []T) {
+	// seen := make(map[T]bool)
+	// 遍历 old 切片，将不在 now 切片中的元素添加到 diff 中
+	for _, v := range old {
+		if !contains(now, v) {
+			diff = append(diff, v)
 		}
 	}
-	return append(strs, str)
+	// 遍历 now 切片，将不在 old 切片中的元素添加到 diff 中
+	for _, v := range now {
+		if !contains(old, v) {
+			diff = append(diff, v)
+		}
+	}
+	return diff
 }
 
-// CompareSliceStr compares two 'string' type slices.
-// It returns true if elements and order are both the same.
-func CompareSliceStr(s1, s2 []string) bool {
+// contains 是一个辅助函数，用于检查切片中是否包含某个元素
+func contains[T comparable](slice []T, item T) bool {
+	for _, v := range slice {
+		if v == item {
+			return true
+		}
+	}
+	return false
+}
+
+// Append 是一个泛型函数，用于向切片中添加不重复的新元素
+func Append[T comparable](slice []T, item T) []T {
+	for _, v := range slice {
+		if v == item {
+			return slice
+		}
+	}
+	return append(slice, item)
+}
+
+// Compare 是一个泛型函数，用于比较两个切片是否相等
+func Compare[T comparable](s1, s2 []T) bool {
 	if len(s1) != len(s2) {
 		return false
 	}
-
 	for i := range s1 {
 		if s1[i] != s2[i] {
 			return false
 		}
 	}
-
 	return true
 }
 
-// CompareSliceStrU compares two 'string' type slices.
-// It returns true if elements are the same, and ignores the order.
-func CompareSliceStrU(s1, s2 []string) bool {
-	if len(s1) != len(s2) {
-		return false
-	}
-
-	for i := range s1 {
-		for j := len(s2) - 1; j >= 0; j-- {
-			if s1[i] == s2[j] {
-				s2 = append(s2[:j], s2[j+1:]...)
-				break
-			}
-		}
-	}
-	return len(s2) <= 0
-}
-
 // 指定查找
-func IsSliceContainsStr(sl []string, str string) bool {
-	str = strings.ToLower(str)
-	for _, s := range sl {
-		if strings.ToLower(s) == str {
+// Contains 是一个泛型函数，用于检查切片中是否包含指定的元素
+func Contains[T comparable](sl []T, item T) bool {
+	for _, v := range sl {
+		if v == item {
 			return true
 		}
 	}
 	return false
 }
 
-// 指定查找
-func IsSliceContainsInt64(sl []int64, i int64) bool {
-	for _, s := range sl {
-		if s == i {
-			return true
-		}
-	}
-	return false
-}
-
-// SliceHas 利用Map判断指定值是否在Slice切片中存在
+// ContainsFunc 利用Map判断指定值是否在Slice切片中存在
 //
 //	返回一个回调函数，用来判断值知否存在，结果为bool
 //	基于泛型形参支持可比较类型，具体定义可参考泛型 comparable 接口
@@ -207,7 +166,7 @@ func IsSliceContainsInt64(sl []int64, i int64) bool {
 //	f := IsHasSlice[int](sl)
 //	f(2) // false
 //	f(5) // true
-func IsHasSlice[V comparable](s []V) func(V) bool {
+func ContainsFunc[V comparable](s []V) func(V) bool {
 	tmp := make(map[V]struct{}, len(s))
 	for _, v := range s {
 		tmp[v] = struct{}{}
@@ -218,8 +177,8 @@ func IsHasSlice[V comparable](s []V) func(V) bool {
 	}
 }
 
-// SliceDelete 切片删除元素
-func SliceDelete[V comparable](s []V, key V) []V {
+// RemoveFunc 切片删除元素
+func RemoveFunc[V comparable](s []V, key V) []V {
 	i := 0
 	for _, v := range s {
 		if v != key {
@@ -230,46 +189,8 @@ func SliceDelete[V comparable](s []V, key V) []V {
 	return s[:i]
 }
 
-//	 SliceStructHas 利用Map判断指定字段值的结构体是否在Slice切片中存在
-//		返回一个回调函数，用来判断指定字段值知否存在，结果为bool
-//		基于泛型形参支持可比较类型，具体定义可参考泛型 comparable 接口
-//		利用反射获取结构体指定字段，判断是否为可比较类型，并赋值给map的key
-//		sl := []User{
-//			{
-//				Name:    "alpha",
-//				Age:     20,
-//				Sex:     "male",
-//				Tickets: []string{"001", "002"},
-//			},
-//			{
-//				Name:    "beta",
-//				Age:     21,
-//				Sex:     "female",
-//				Tickets: []string{"003", "004"},
-//			},
-//		}
-//		f := SliceStructHas[User, string](sl, "Name")
-//		f("alpha") // true
-//		f("sigma") // false
-func SliceStructHas[V any, K comparable](s []V, key string) (func(K) bool, error) {
-	tmp := make(map[K]V, len(s))
-	for _, v := range s {
-		of := reflect.ValueOf(v)
-		f := of.FieldByName(key)
-		if !f.Type().Comparable() {
-			return nil, fmt.Errorf("key [%s] is not comparable type", key)
-		}
-		k := f.Interface().(K)
-		tmp[k] = v
-	}
-	return func(key K) bool {
-		_, ok := tmp[key]
-		return ok
-	}, nil
-}
-
-// SliceStructPop 查找切片中指定字段值的结构体并返回一个新数组
-func SliceStructPop[V any, K comparable](s []V, key string, val K) ([]V, error) {
+// FindByKeyValue 查找切片中指定字段值的结构体并返回一个新数组
+func FindByKeyValue[V any, K comparable](s []V, key string, val K) ([]V, error) {
 	tmp := make([]V, len(s))
 	for _, v := range s {
 		of := reflect.ValueOf(v)
@@ -285,34 +206,36 @@ func SliceStructPop[V any, K comparable](s []V, key string, val K) ([]V, error) 
 	return tmp, nil
 }
 
-// SliceStructDelete 删除切片中指定字段值的结构体并返回
-func SliceStructDelete[V any, K comparable](s []V, key string, val K) ([]V, error) {
-	i := 0
+// RemoveByKeyValue 删除切片中指定字段值的结构体并返回
+func RemoveByKeyValue[V any, K comparable](s []V, key string, val K) ([]V, error) {
+	var result []V
 	for _, v := range s {
 		of := reflect.ValueOf(v)
 		f := of.FieldByName(key)
+		if !f.IsValid() {
+			return nil, fmt.Errorf("key [%s] does not exist", key)
+		}
 		if !f.Type().Comparable() {
 			return nil, fmt.Errorf("key [%s] is not comparable type", key)
 		}
 		k := f.Interface().(K)
 		if k != val {
-			s[i] = v
-			i++
+			result = append(result, v)
 		}
 	}
-	return s[:i], nil
+	return result, nil
 }
 
-// SliceIntersection 查找两个切片的交集
-func SliceIntersection[V comparable](arr1 []V, arr2 []V) []V {
-	seen := make(map[V]bool)
-	for _, str := range arr1 {
-		seen[str] = true
+// FindMixed 查找两个切片的交集
+func FindMixed[V comparable](arr1 []V, arr2 []V) []V {
+	seen := make(map[V]struct{})
+	for _, v := range arr1 {
+		seen[v] = struct{}{}
 	}
 	var intersection []V
-	for _, str := range arr2 {
-		if seen[str] {
-			intersection = append(intersection, str)
+	for _, v := range arr2 {
+		if _, found := seen[v]; found {
+			intersection = append(intersection, v)
 		}
 	}
 	return intersection
