@@ -240,3 +240,14 @@ func FindMixed[V comparable](arr1 []V, arr2 []V) []V {
 	}
 	return intersection
 }
+
+func FuncHasSlice[V comparable](s []V) func(V) bool {
+	tmp := make(map[V]struct{}, len(s))
+	for _, v := range s {
+		tmp[v] = struct{}{}
+	}
+	return func(key V) bool {
+		_, ok := tmp[key]
+		return ok
+	}
+}

@@ -14,17 +14,17 @@ import (
 
 // 响应 结构体
 type Reply struct {
-	Code   int         `json:"Code"`            //结果码: 正常=0 失败>0
-	Status string      `json:"Status"`          //正常=OK，失败=具体错误内容
-	Error  string      `json:"Error,omitempty"` //错误信息
-	Err    error       `json:"-"`               //错误
-	Msg    string      `json:"Msg"`             //信息提示
-	RunMS  int64       `json:"RunMS"`           //执行时间，单位毫秒 ms
-	Data   interface{} `json:"Data,omitempty"`  //结果值
+	Code   int         `json:"Code"`            // 结果码: 正常=0 失败>0
+	Status string      `json:"Status"`          // 正常=OK，失败=具体错误内容
+	Error  string      `json:"Error,omitempty"` // 错误信息
+	Err    error       `json:"-"`               // 错误
+	Msg    string      `json:"Msg"`             // 信息提示
+	RunMS  int64       `json:"RunMS"`           // 执行时间，单位毫秒 ms
+	Data   interface{} `json:"Data,omitempty"`  // 结果值
 }
 
 func NewReply() Reply {
-	return Reply{Code: 0, Status: "OK"} //Code: 0 时正确响应了请求，成功
+	return Reply{Code: 0, Status: "OK"} // Code: 0 时正确响应了请求，成功
 }
 
 func Return(msg string, reply *Reply, start *time.Time) {
@@ -70,4 +70,19 @@ func Recover() {
 		log.Panicf("SYSTEM ACTION PANIC: %v, STACK: %v", r, string(debug.Stack()))
 		log.Panicf("%s\r\n", strings.Repeat("!", 30))
 	}
+}
+
+func RecoverGin(c *gin.Context) {
+	defer func() {
+		if r := recover(); r != nil {
+			fmt.Printf("panic: %v\n", r)
+			debug.PrintStack()
+			c.JSON(200, gin.H{
+				"Code":   "400",
+				"Status": "ERROR",
+				"Msg":    fmt.Sprintf("服务内部错误:%v", r),
+			})
+		}
+	}()
+	c.Next()
 }

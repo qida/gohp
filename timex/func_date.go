@@ -30,7 +30,7 @@ func GetZeroTimeOfDay(d time.Time) time.Time {
 
 func GetFirstDateOfWeek(d time.Time, start_sunday bool) time.Time {
 	var timeFirst time.Time
-	var n = int(d.Weekday())
+	n := int(d.Weekday())
 	if !start_sunday {
 		if d.Weekday() == 0 {
 			n = 7
@@ -107,7 +107,7 @@ func DateT(t time.Time, format string) string {
 var datePatterns = []string{
 	// year
 	"Y", "2006", // A full numeric representation of a year, 4 digits   Examples: 1999 or 2003
-	"y", "06", //A two digit representation of a year   Examples: 99 or 03
+	"y", "06", // A two digit representation of a year   Examples: 99 or 03
 
 	// month
 	"m", "01", // Numeric representation of a month, with leading zeros 01 through 12
