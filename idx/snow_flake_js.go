@@ -21,7 +21,7 @@ type SnowFlakeJS struct {
 // 实例化一个工作节点
 // 0 < id_worker < 1024
 func NewSnowFlakeJS() *SnowFlakeJS {
-	return &SnowFlakeJS{
+	return &SnowFlakeJS
 		timestamp: 0,
 		number:    0,
 	}
