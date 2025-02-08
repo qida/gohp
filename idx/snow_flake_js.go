@@ -18,10 +18,8 @@ type SnowFlakeJS struct {
 	number    int64      // 当前毫秒已经生成的id序列号(从0开始累加) 1毫秒内最多生成4096个ID
 }
 
-// 实例化一个工作节点
-// 0 < id_worker < 1024
 func NewSnowFlakeJS() *SnowFlakeJS {
-	return &SnowFlakeJS
+	return &SnowFlakeJS{
 		timestamp: 0,
 		number:    0,
 	}
