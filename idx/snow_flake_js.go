@@ -12,7 +12,7 @@ import (
 // 129511438879297536
 
 // 定义一个woker工作节点所需要的基本参数
-type JsSnowFlake struct {
+type SnowFlakeJS struct {
 	mu        sync.Mutex // 添加互斥锁 确保并发安全
 	timestamp int64      // 记录时间戳
 	number    int64      // 当前毫秒已经生成的id序列号(从0开始累加) 1毫秒内最多生成4096个ID
@@ -20,8 +20,8 @@ type JsSnowFlake struct {
 
 // 实例化一个工作节点
 // 0 < id_worker < 1024
-func NewJsSnowFlake() *JsSnowFlake {
-	return &JsSnowFlake{
+func NewSnowFlakeJS() *SnowFlakeJS {
+	return &SnowFlakeJS{
 		timestamp: 0,
 		number:    0,
 	}
@@ -29,7 +29,7 @@ func NewJsSnowFlake() *JsSnowFlake {
 
 // 接下来我们开始生成id
 // 生成方法一定要挂载在某个woker下，这样逻辑会比较清晰 指定某个节点生成id
-func (t *JsSnowFlake) GetId() int64 {
+func (t *SnowFlakeJS) GetId() int64 {
 	t.mu.Lock()
 	defer t.mu.Unlock()
 	// 获取生成时的时间戳
@@ -42,6 +42,8 @@ func (t *JsSnowFlake) GetId() int64 {
 			for now <= t.timestamp {
 				now = time.Now().UnixMilli()
 			}
+			t.timestamp = now // 更新时间戳为新的毫秒数
+			t.number = 0      // 重置序列号
 		}
 	} else {
 		// 如果当前时间与工作节点上一次生成ID的时间不一致 则需要重置工作节点生成ID的序号
