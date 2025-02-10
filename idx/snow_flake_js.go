@@ -25,7 +25,7 @@ func NewSnowFlakeJS() *SnowFlakeJS {
 }
 
 // 接下来我们开始生成id
-// 生成方法一定要挂载在某个woker下，这样逻辑会比较清晰 指定某个节点生成id
+// 生成方法一定要挂载在某个worker下，这样逻辑会比较清晰 指定某个节点生成id
 func (t *SnowFlakeJS) GetId() int64 {
 	t.mu.Lock()
 	defer t.mu.Unlock()
