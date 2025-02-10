@@ -11,7 +11,6 @@ import (
 // JS 支持的最大数 999999999999999  15位
 // 129511438879297536
 
-// 定义一个woker工作节点所需要的基本参数
 type SnowFlakeJS struct {
 	mu        sync.Mutex // 添加互斥锁 确保并发安全
 	timestamp int64      // 记录时间戳
