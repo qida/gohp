@@ -10,6 +10,10 @@ import (
 // 因为snowFlake目的是解决分布式下生成唯一id 所以ID中是包含集群和节点编号在内的
 // JS 支持的最大数 999999999999999  15位
 // 129511438879297536
+const (
+	numberBits uint8 = 15 // 表示每个集群下的每个节点，1毫秒内可生成的id序号的二进制位数 即每毫秒可生成 2^15-1=32768个唯一ID
+	numberMax int64 = -1 ^ (-1 << numberBits) // 同上，用来表示生成id序号的最大值
+)
 
 type SnowFlakeJS struct {
 	mu        sync.Mutex // 添加互斥锁 确保并发安全
