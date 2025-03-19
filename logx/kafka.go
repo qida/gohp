@@ -1,9 +1,11 @@
 package logx
 
 import (
-	"github.com/Shopify/sarama"
-	"go.uber.org/zap"
 	"io"
+
+	// "github.com/Shopify/sarama"
+	"github.com/IBM/sarama"
+	"go.uber.org/zap"
 )
 
 // LogKafka 写入kafka

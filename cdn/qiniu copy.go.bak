@@ -1,0 +1,189 @@
+package cdn
+
+import (
+	"bytes"
+	"fmt"
+	"io"
+	"log"
+	"strings"
+	"time"
+
+	"github.com/qiniu/go-sdk/v7/auth/qbox"
+	"github.com/qiniu/go-sdk/v7/cdn"
+	"github.com/qiniu/go-sdk/v7/storage"
+	"golang.org/x/net/context"
+)
+
+// https://developer.qiniu.com/kodo/1238/go#upload-file
+
+// QiNiu 结构体用于封装七牛云相关的配置和客户端
+type QiNiu struct {
+	Bucket        string
+	Url           string
+	Mac           *qbox.Mac
+	CdnManager    *cdn.CdnManager
+	Config        *storage.Config
+	PutPolicy     *storage.PutPolicy
+	BucketManager *storage.BucketManager
+}
+
+// NewQiNiu 创建一个新的 QiNiu 实例
+func NewQiNiu(bucket string, url string, accessKey, secretKey string) *QiNiu {
+	zone, err := storage.GetZone(accessKey, bucket)
+	if err != nil {
+		log.Printf("Failed to get zone: %v", err)
+	}
+	mac := qbox.NewMac(accessKey, secretKey)
+	cdnManager := cdn.NewCdnManager(mac)
+	cfg := &storage.Config{
+		Zone:          zone,
+		UseHTTPS:      false,
+		UseCdnDomains: true,
+	}
+	bucketManager := storage.NewBucketManager(mac, cfg)
+	return &QiNiu{
+		Bucket:        bucket,
+		Url:           url,
+		Mac:           mac,
+		CdnManager:    cdnManager,
+		BucketManager: bucketManager,
+		Config:        cfg,
+		PutPolicy: &storage.PutPolicy{
+			Scope: bucket,
+		},
+	}
+}
+
+// uploadFile 封装上传文件的通用逻辑
+func (c *QiNiu) uploadFile(localFile io.Reader, size int64, file_name string) (string, error) {
+	putPolicy := storage.PutPolicy{
+		Scope: fmt.Sprintf("%s:%s", c.Bucket, file_name), // 覆盖上传
+	}
+	upToken := putPolicy.UploadToken(c.Mac)
+	formUploader := storage.NewFormUploader(c.Config)
+	ret := storage.PutRet{}
+	putExtra := storage.PutExtra{
+		Params: map[string]string{
+			"x:name": file_name,
+		},
+	}
+	err := formUploader.Put(context.Background(), &ret, upToken, file_name, localFile, size, &putExtra)
+	if err != nil {
+		return "", fmt.Errorf("failed to upload file: %w", err)
+	}
+	url_file := ret.Key
+	log.Printf("=====上传======\r\nKey:%s Hash:%s\r\n==============\r\n", ret.Key, ret.Hash)
+	return url_file, nil
+}
+
+// Upload 上传文件并可选择刷新 CDN
+func (c *QiNiu) Upload(localFile io.Reader, size int64, file_name string, is_refresh bool) (string, error) {
+	var isRefresh bool
+	if is_refresh {
+		_, err := c.BucketManager.Stat(c.Bucket, file_name)
+		if err == nil { // 存在
+			isRefresh = true
+		} else {
+			log.Printf("Failed to check file existence: %v", err)
+		}
+	}
+	url_file, err := c.uploadFile(localFile, size, file_name)
+	if err != nil {
+		return "", err
+	}
+	if isRefresh {
+		err = c.Refresh(c.Url + url_file)
+		if err != nil {
+			return "", fmt.Errorf("failed to refresh CDN: %w", err)
+		}
+	}
+	return url_file, nil
+}
+
+// UploadFile 上传文件数据并刷新 CDN
+func (c *QiNiu) UploadFile(file_name string, file_data []byte) (string, error) {
+	url_file, err := c.uploadFile(bytes.NewReader(file_data), int64(len(file_data)), file_name)
+	if err != nil {
+		return "", err
+	}
+	err = c.Refresh(c.Url + url_file)
+	if err != nil {
+		return "", fmt.Errorf("failed to refresh CDN: %w", err)
+	}
+	return url_file, nil
+}
+
+// Refresh 刷新 CDN 缓存
+func (c *QiNiu) Refresh(url ...string) error {
+	for i := range url {
+		if !strings.Contains(url[i], "http:") {
+			url[i] = "http:" + url[i]
+		}
+	}
+	log.Printf("=====刷新文件======\r\n%s\r\n==============\r\n", url)
+	_, err := c.CdnManager.RefreshUrls(url)
+	if err != nil {
+		return fmt.Errorf("failed to refresh CDN urls: %w", err)
+	}
+	return nil
+}
+
+// MoveFile 移动文件
+func (c *QiNiu) MoveFile(src_url string, dst_url string) (string, error) {
+	err := c.BucketManager.Move(c.Bucket, src_url, c.Bucket, dst_url, true)
+	if err != nil {
+		return "", fmt.Errorf("failed to move file: %w", err)
+	}
+	return dst_url, nil
+}
+
+// GetPrivateMediaUrl 获取私有媒体 URL
+func (c *QiNiu) GetPrivateMediaUrl(src_url string) string {
+	deadline := time.Now().Add(time.Minute * 60).Unix() // 60 分钟有效期
+	if !strings.Contains(src_url, "http:") {
+		src_url = "http:" + src_url
+	}
+	return storage.MakePrivateURL(c.Mac, c.Url, src_url, deadline)
+}
+
+// Delete 删除文件
+func (c *QiNiu) Delete(url string) error {
+	if url == "" {
+		return nil
+	}
+	key := strings.TrimPrefix(url, c.Url)
+	err := c.BucketManager.Delete(c.Bucket, key)
+	if err != nil {
+		return fmt.Errorf("failed to delete file: %w", err)
+	}
+	log.Printf("成功删除：%s\r\n", key)
+	return nil
+}
+
+// GetTokenUpload 获取上传令牌
+func (c *QiNiu) GetTokenUpload(region string, key string) map[string]interface{} {
+	m := make(map[string]interface{})
+	m["Region"] = region
+	m["UpTokenURL"] = c.Bucket
+	if key == "" {
+		m["Key"] = fmt.Sprintf("temp/%d", time.Now().Unix()) // 不起作用
+	} else {
+		m["Key"] = key
+	}
+	m["UpToken"] = c.PutPolicy.UploadToken(c.Mac)
+	m["Domain"] = strings.Replace(c.Url, "/", "", -1)
+	return m
+}
+
+// RefreshDir 刷新目录
+func (c *QiNiu) RefreshDir(dir string) error {
+	// 刷新目录，刷新目录需要联系七牛技术支持开通权限
+	// 单次请求链接不可以超过 10 个，如果超过，请分批发送请求
+	dirsToRefresh := []string{dir}
+	_, err := c.CdnManager.RefreshDirs(dirsToRefresh)
+	if err != nil {
+		return fmt.Errorf("failed to refresh directory: %w", err)
+	}
+	log.Printf("刷新目录：%v\r\n", dirsToRefresh)
+	return nil
+}
