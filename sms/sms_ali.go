@@ -6,23 +6,27 @@ import (
 	"time"
 
 	openapi "github.com/alibabacloud-go/darabonba-openapi/v2/client"
-	dysmsapi "github.com/alibabacloud-go/dysmsapi-20170525/v3/client"
+	dysmsapi "github.com/alibabacloud-go/dysmsapi-20170525/v4/client"
 	"github.com/alibabacloud-go/tea/tea"
 )
 
 type SMSAli struct {
-	client  *dysmsapi.Client
-	request *dysmsapi.SendSmsRequest
+	client *dysmsapi.Client
 }
 
 // 初始化短信客户端
-func New(accessKeyId, accessKeySecret string) *SMSAli {
+func NewSMSAli(accessKeyId, accessKeySecret string) *SMSAli {
 	config := &openapi.Config{
 		AccessKeyId:     &accessKeyId,
 		AccessKeySecret: &accessKeySecret,
 		RegionId:        tea.String("cn-hangzhou"), // 默认新加坡（根据实际情况修改）
 	}
-	return &SMSAli{client: dysmsapi.NewClient(config)}
+	cli, err := dysmsapi.NewClient(config)
+	if err != nil {
+		return nil
+	}
+
+	return &SMSAli{client: cli}
 }
 
 // 发送短信

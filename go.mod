@@ -5,6 +5,8 @@ go 1.24.0
 require (
 	github.com/IBM/sarama v1.45.1
 	github.com/Lofanmi/pinyin-golang v0.0.0-20211114132645-1db892057f20
+	github.com/alibabacloud-go/darabonba-openapi/v2 v2.1.4
+	github.com/alibabacloud-go/tea v1.3.4
 	github.com/aliyun/aliyun-oss-go-sdk v3.0.2+incompatible
 	github.com/apache/rocketmq-client-go/v2 v2.1.2
 	github.com/beevik/ntp v1.3.0
@@ -52,18 +54,13 @@ require (
 	gorm.io/gorm v1.25.12
 )
 
-require (
-	github.com/alibabacloud-go/darabonba-openapi/v2 v2.1.4
-	github.com/alibabacloud-go/dysmsapi-20170525/v3 v3.0.6
-	github.com/alibabacloud-go/tea v1.3.4
-)
+require github.com/alibabacloud-go/dysmsapi-20170525/v4 v4.1.2
 
 require (
 	github.com/alibabacloud-go/alibabacloud-gateway-spi v0.0.5 // indirect
 	github.com/alibabacloud-go/debug v1.0.1 // indirect
 	github.com/alibabacloud-go/endpoint-util v1.1.0 // indirect
-	github.com/alibabacloud-go/openapi-util v0.1.0 // indirect
-	github.com/alibabacloud-go/tea-utils v1.3.1 // indirect
+	github.com/alibabacloud-go/openapi-util v0.1.1 // indirect
 	github.com/alibabacloud-go/tea-utils/v2 v2.0.7 // indirect
 	github.com/aliyun/credentials-go v1.3.10 // indirect
 	github.com/bytedance/sonic v1.11.6 // indirect
