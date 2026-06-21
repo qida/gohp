@@ -157,7 +157,7 @@ func (l *LogRocket) sendLogMQ(level, title, trans, action, measurement string, f
 			DataType:       "",
 		},
 		Measurement:  measurement,
-		AppID:        "",
+		AppId:        "",
 		RawData:      "",
 		ElapsedTime:  0,
 		Fields:       fields,

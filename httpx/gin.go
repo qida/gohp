@@ -14,12 +14,12 @@ import (
 
 // 响应 结构体
 type Reply struct {
-	Code   int         `json:"Code"`             // 结果码: 正常=0 失败>0
-	Status string      `json:"Status,omitempty"` // 正常=OK，失败=具体错误内容
-	Error  string      `json:"Error,omitempty"`  // 错误信息
-	Msg    string      `json:"Msg,omitempty"`    // 信息提示
-	RunMS  int64       `json:"RunMS,omitempty"`  // 执行时间，单位毫秒 ms
-	Data   interface{} `json:"Data,omitempty"`   // 结果值
+	Code   int         `json:"code"`             // 结果码: 正常=0 失败>0
+	Status string      `json:"status,omitempty"` // 正常=OK，失败=具体错误内容
+	Error  string      `json:"error,omitempty"`  // 错误信息
+	Msg    string      `json:"msg,omitempty"`    // 信息提示
+	RunMS  int64       `json:"run_ms,omitempty"` // 执行时间，单位毫秒 ms
+	Data   interface{} `json:"data,omitempty"`   // 结果值
 	Err    error       `json:"-"`                // 错误
 }
 

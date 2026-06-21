@@ -19,7 +19,7 @@
     # 最大保留文件数量，默认：0为全部保留
     count: 0
     # 是否使用UTC时间
-    isUTC: false 
+    isUTC: false
     # 是否启用gzip压缩
     isGzip: true
   file:

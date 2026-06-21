@@ -15,7 +15,7 @@ const (
 	Trans          = "Trans"          //事务  (列 : 整个视频的调用流程)
 	Action         = "Action"         //操作  (列 : 具体的功能)
 	Method         = "Method"         //方法  (列 : 具体的方法)
-	AppID          = "AppID"          //
+	AppId          = "AppId"          //
 	ServiceCluster = "ServiceCluster" //集群ID
 	ServiceID      = "ServiceID"      //服务ID
 	ServiceName    = "ServiceName"    //服务名称
@@ -49,7 +49,7 @@ type LogQuery struct {
 	LastTime    string `json:"LastTime,omitempty"`    //最近时间 (-2d/天;-5m/分钟)
 	ServiceID   string `json:"ServiceID,omitempty"`   //服务ID
 	ServiceName string `json:"ServiceName,omitempty"` //服务名
-	AppID       string `json:"AppID,omitempty"`       //应用ID
+	AppId       string `json:"AppId,omitempty"`       //应用ID
 	ClientIP    string `json:"ClientIP,omitempty"`    //客户端IP
 }
 
@@ -89,7 +89,7 @@ type LogBody struct {
 	//测量维度
 	Measurement string `json:"Measurement,omitempty"`
 	//应用ID
-	AppID string `json:"AppID,omitempty"`
+	AppId string `json:"AppId,omitempty"`
 	////原始数据
 	RawData string `json:"-"`
 	//运行时间 (毫秒us) //耗时(毫秒us)
