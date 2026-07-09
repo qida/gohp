@@ -8,7 +8,6 @@ import (
 	"time"
 
 	"github.com/qida/gohp/logx"
-
 	"github.com/secsy/goftp"
 )
 

@@ -16,6 +16,17 @@ type Loger struct {
 	*zap.Logger
 }
 
+// Level 日志级别
+type Level string
+
+const (
+	LevelDebug Level = "debug"
+	LevelInfo  Level = "info"
+	LevelWarn  Level = "warn"
+	LevelError Level = "error"
+	LevelFatal Level = "fatal"
+)
+
 // Config 日志配置
 type Config struct {
 	Mode       string `mapstructure:"mode" yaml:"mode"` // 日志模式，可选值：console, file
@@ -51,6 +62,12 @@ func InitLoger(cfg *Config) (*Loger, error) {
 			LocalTime:  true,
 		})
 		core = zapcore.NewCore(encoder, writeSyncer, level)
+
+	case "dingding":
+	case "mail":
+	case "kafka":
+	case "rocketmq":
+
 	default:
 		writeSyncer := zapcore.AddSync(&lumberjack.Logger{
 			Filename:   cfg.Filename,
@@ -77,4 +94,94 @@ func getEncoder() zapcore.Encoder {
 	encoderConfig.EncodeTime = zapcore.ISO8601TimeEncoder
 	encoderConfig.EncodeLevel = zapcore.CapitalLevelEncoder
 	return zapcore.NewConsoleEncoder(encoderConfig)
+}
+
+// Debug Debug级别格式化日志
+func (l *Loger) Debug(args ...any) {
+	l.Sugar().Debug(args...)
+}
+
+// Info Info级别格式化日志
+func (l *Loger) Info(args ...any) {
+	l.Sugar().Info(args...)
+}
+
+// Error Error级别格式化日志
+func (l *Loger) Error(args ...any) {
+	l.Sugar().Error(args...)
+}
+
+// Panic Panic级别格式化日志
+func (l *Loger) Panic(args ...any) {
+	l.Sugar().Panic(args...)
+}
+
+// Fatal Fatal级别格式化日志
+func (l *Loger) Fatal(args ...any) {
+	l.Sugar().Fatal(args...)
+}
+
+// DPanic Panic级别格式化日志
+func (l *Loger) DPanic(args ...any) {
+	l.Sugar().DPanic(args...)
+}
+
+// Debugf Debug级别格式化日志
+func (l *Loger) Debugf(format string, args ...any) {
+	l.Sugar().Debugf(format, args...)
+}
+
+// Infof Info级别格式化日志
+func (l *Loger) Infof(format string, args ...any) {
+	l.Sugar().Infof(format, args...)
+}
+
+// Errorf Error级别格式化日志
+func (l *Loger) Errorf(format string, args ...any) {
+	l.Sugar().Errorf(format, args...)
+}
+
+// Panicf Panic级别格式化日志
+func (l *Loger) Panicf(format string, args ...any) {
+	l.Sugar().Panicf(format, args...)
+}
+
+// Fatalf Fatal级别格式化日志
+func (l *Loger) Fatalf(format string, args ...any) {
+	l.Sugar().Fatalf(format, args...)
+}
+
+// DPanicf Panic级别格式化日志
+func (l *Loger) DPanicf(format string, args ...any) {
+	l.Sugar().DPanicf(format, args...)
+}
+
+// Debugln Debug级别格式化日志
+func (l *Loger) Debugln(args ...any) {
+	l.Sugar().Debugln(args...)
+}
+
+// Infoln Info级别格式化日志
+func (l *Loger) Infoln(args ...any) {
+	l.Sugar().Infoln(args...)
+}
+
+// Errorln Error级别格式化日志
+func (l *Loger) Errorln(args ...any) {
+	l.Sugar().Errorln(args...)
+}
+
+// Panicln Panic级别格式化日志
+func (l *Loger) Panicln(args ...any) {
+	l.Sugar().Panicln(args...)
+}
+
+// Fatalln Fatal级别格式化日志
+func (l *Loger) Fatalln(args ...any) {
+	l.Sugar().Fatalln(args...)
+}
+
+// DPanicln Panic级别格式化日志
+func (l *Loger) DPanicln(args ...any) {
+	l.Sugar().DPanicln(args...)
 }
