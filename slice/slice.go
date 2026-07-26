@@ -226,6 +226,26 @@ func RemoveByKeyValue[V any, K comparable](s []V, key string, val K) ([]V, error
 	return result, nil
 }
 
+// SliceStructPop 弹出切片中指定字段值匹配的结构体并返回
+func SliceStructPop[V any, K comparable](s []V, key string, val K) ([]V, error) {
+	var result []V
+	for _, v := range s {
+		of := reflect.ValueOf(v)
+		f := of.FieldByName(key)
+		if !f.IsValid() {
+			return nil, fmt.Errorf("key [%s] does not exist", key)
+		}
+		if !f.Type().Comparable() {
+			return nil, fmt.Errorf("key [%s] is not comparable type", key)
+		}
+		k := f.Interface().(K)
+		if k == val {
+			result = append(result, v)
+		}
+	}
+	return result, nil
+}
+
 // FindMixed 查找两个切片的交集
 func FindMixed[V comparable](arr1 []V, arr2 []V) []V {
 	seen := make(map[V]struct{})

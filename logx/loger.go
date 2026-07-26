@@ -25,6 +25,7 @@ const (
 	LevelWarn  Level = "warn"
 	LevelError Level = "error"
 	LevelFatal Level = "fatal"
+	LevelPanic Level = "panic"
 )
 
 // Config 日志配置
