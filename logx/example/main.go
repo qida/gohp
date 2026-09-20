@@ -12,34 +12,34 @@ import (
 
 func main() {
 	/*
-		debugLevel := logger.DebugLevel
-		infoLevel := logger.InfoLevel
-		dpanicLevel := logger.DPanicLevel
+		debugLevel := logx.DebugLevel
+		infoLevel := logx.InfoLevel
+		dpanicLevel := logx.DPanicLevel
 	*/
-	//logger.Debug("defaultLogger", zap.String("stringField", "hahahaha"))
+	//logx.Debug("defaultLogger", zap.String("stringField", "hahahaha"))
 	/*
-		log, err := logger.New(
-			logger.WithLevel(logger.DebugLevel),
-			logger.WithCaller(),
-			logger.WithFile([]logger.Filelogger{
-				logger.Filelogger{
+		log, err := logx.New(
+			logx.WithLevel(logx.DebugLevel),
+			logx.WithCaller(),
+			logx.WithFile([]logx.Filelogger{
+				logx.Filelogger{
 					Path:  "./logs/debug.log",
 					Level: &debugLevel,
 				},
-				logger.Filelogger{
+				logx.Filelogger{
 					Path:  "./logs/info.log",
 					Level: &infoLevel,
 				},
 			}),
-			logger.WithKafka([]logger.LogKafka{
-				logger.LogKafka{
+			logx.WithKafka([]logx.LogKafka{
+				logx.LogKafka{
 					Topic:   "optdev",
 					Address: []string{"127.0.0.1:9092", "127.0.0.1:9093", "127.0.0.1:9094"},
 					Level:   &debugLevel,
 				},
 			}),
-			logger.WithMail([]logger.LogMail{
-				logger.LogMail{
+			logx.WithMail([]logx.LogMail{
+				logx.LogMail{
 					Level:    &dpanicLevel,
 					From:     "zls3434@qq.com",
 					To:       "zls3434@126.com",
@@ -49,7 +49,7 @@ func main() {
 					Password: "1111111111",
 				},
 			}),
-			logger.WithInitialFields("app", "mediaserver"),
+			logx.WithInitialFields("app", "mediaserver"),
 		)
 	*/
 	//jsonStr := `{

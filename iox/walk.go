@@ -6,14 +6,14 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/bytedance/gopkg/util/logger"
+	"github.com/qida/gohp/logx"
 )
 
 // 获取指定目录及所有子目录下的所有文件，可以匹配后缀过滤。
 func WalkDir(dir string, suffix []string) (_files []string, _err error) {
 	ok, _ := DirExistOrCreate(dir, true) //不存在就建立
 	if !ok {
-		logger.Debugf("目录不存在:%s", dir)
+		logx.Debugf("目录不存在:%s", dir)
 		return
 	}
 	_files = make([]string, 0, 30)

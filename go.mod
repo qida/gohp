@@ -13,7 +13,7 @@ require (
 	github.com/bmizerany/assert v0.0.0-20160611221934-b7ed37b82869
 	github.com/boombuler/barcode v1.1.0
 	github.com/btfak/sntp v0.0.0-20170909025617-bbde69cbb681
-	github.com/bytedance/gopkg v0.1.4
+	github.com/bytedance/gopkg v0.1.4 // indirect
 	github.com/felixge/tcpkeepalive v0.0.0-20220224101934-f56176a53a1b
 	github.com/gin-gonic/gin v1.12.0
 	github.com/go-resty/resty/v2 v2.17.2

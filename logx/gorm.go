@@ -9,7 +9,7 @@ import (
 	"gorm.io/gorm/logger"
 )
 
-// GormLogger 将 zap logger 适配为 gorm logger.Interface
+// GormLogger 将 zap logger 适配为 gorm logx.Interface
 type GormLogger struct {
 	*Loger
 	SlowThreshold             time.Duration

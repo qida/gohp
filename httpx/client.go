@@ -54,13 +54,13 @@ func (t *ClientHttp) Debug(debug bool) *ClientHttp {
 	return t
 }
 
-func (t *ClientHttp) LogFile() *ClientHttp {
+func (t *ClientHttp) LogFile(dir string) *ClientHttp {
 	once.Do(func() {
-		if _, err := os.Stat("./log"); os.IsNotExist(err) {
-			os.Mkdir("./log", os.ModePerm)
+		if _, err := os.Stat(dir); os.IsNotExist(err) {
+			os.Mkdir(dir, os.ModePerm)
 		}
 		// 创建日志文件
-		logFile, err := os.OpenFile("./log/go-resty.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0o666)
+		logFile, err := os.OpenFile(dir+"/go-resty.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0o666)
 		if err != nil {
 			log.Fatalf("Failed to open log file: %v", err)
 		}

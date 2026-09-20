@@ -83,7 +83,7 @@ func init() {
 
 // Init 初始化日志
 // mode: "console" - 仅输出到控制台, "file" - 仅输出到文件, 其他值 - 同时输出到控制台和文件
-func Init(cfg *Config) error {
+func DefaultWithMap(cfg *Config) error {
 	level, err := zapcore.ParseLevel(cfg.Level)
 	if err != nil {
 		level = zapcore.InfoLevel

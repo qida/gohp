@@ -109,7 +109,7 @@ find / -name "*libxcb.so.1*"
 ```
 0 0   * * * /mnt/sh/check_certd.sh
 0 */1 * * * /mnt/sh/ding2_sysinfo.sh
-0 0   * * * ntpdate cn.pool.ntp.org >> /var/log/ntpdate.log 2>&1
+0 0   * * * ntpdate cn.pool.ntp.org >> ntpdate.log 2>&1
 #  service crond reload
 ```
 
