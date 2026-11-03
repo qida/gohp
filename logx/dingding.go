@@ -73,13 +73,7 @@ func (ld *LogDingding) Write(p []byte) (int, error) {
 			},
 		}
 	}
-	/* 效果
-	Thrift服务端口: 22725
-	级别: INFO
-	位置: 标签中心 市侧
-	文件: initialize/thrift.go:40
-	时间: 2022-09-21 17:27:58.857
-	*/
+
 	byt, _ := json.Marshal(m)
 	params := url.Values{}
 	params.Add("access_token", ld.access_token)
