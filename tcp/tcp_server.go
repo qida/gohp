@@ -115,7 +115,13 @@ func NewWithTLS(address, relay, certFile, keyFile string) *server {
 
 func (s *server) initRelay() {
 	var relayTcp net.Conn
-	defer relayTcp.Close()
+	// 注意：不能直接 defer relayTcp.Close()，此时 relayTcp 为 nil，
+	// 会在注册 defer 时立即触发 nil 指针 panic
+	defer func() {
+		if relayTcp != nil {
+			relayTcp.Close()
+		}
+	}()
 	var err error
 	for {
 		msg := <-s.RelayMessage

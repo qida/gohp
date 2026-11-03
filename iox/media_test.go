@@ -6,17 +6,19 @@ import (
 )
 
 func TestGetMP4Duration(t *testing.T) {
-	t.Run("tt.name", func(t *testing.T) {
-		file, err := os.Open("http://xxx/audio/rec_customer_follow/1608373085_老潘语音.m4a")
-		if err != nil {
-			t.Errorf("Err = %v ", err)
-			return
-		}
-		gotLengthOfTime, err := GetMP4Duration(file)
-		if err != nil {
-			t.Errorf("GetMP4Duration() error = %v", err)
-			return
-		}
-		t.Errorf("GetMP4Duration() = %v ", gotLengthOfTime)
-	})
+	// 需要本地媒体文件；不存在时跳过
+	file, err := os.Open("testdata/test.mp4")
+	if err != nil {
+		t.Skipf("缺少测试媒体文件 testdata/test.mp4，跳过: %v", err)
+		return
+	}
+	defer file.Close()
+	gotLengthOfTime, err := GetMP4Duration(file)
+	if err != nil {
+		t.Errorf("GetMP4Duration() error = %v", err)
+		return
+	}
+	if gotLengthOfTime <= 0 {
+		t.Errorf("GetMP4Duration() = %v, want > 0", gotLengthOfTime)
+	}
 }

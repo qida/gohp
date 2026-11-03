@@ -24,7 +24,6 @@ func TimerAddPoolLimit() {
 	timer1 := time.NewTicker(1 * time.Second)
 	for {
 		select {
-		case <-time.After(2 * time.Second): //超时
 		case <-timer1.C:
 			go func() {
 				if RequestRegLimit < LimitMax {
@@ -49,8 +48,7 @@ const (
 func CheckRegexMobile(mobile string) (err error) {
 	mobile = strings.TrimSpace(mobile)
 	if mobile == "" {
-		errors.New("手机号不能为空")
-		return
+		return errors.New("手机号不能为空")
 	}
 	reg := regexp.MustCompile(regular)
 	if !reg.MatchString(mobile) {

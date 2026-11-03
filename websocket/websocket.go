@@ -8,7 +8,6 @@ import (
 	"time"
 
 	"github.com/gorilla/websocket"
-	"go.uber.org/zap"
 )
 
 type ClientMangerCenter struct {
@@ -173,7 +172,7 @@ func (c *ClientWS) SendMsgConn() (_err error) {
 	log.Printf("开始 Send : %s\r\n", c.KeyNet)
 	for message := range c.MsgConn {
 		if _err = c.Conn.WriteMessage(websocket.TextMessage, message); _err != nil {
-			log.Printf("WriteMessage 错误\r\n", zap.Error(_err))
+			log.Printf("WriteMessage 错误: %v\r\n", _err)
 			return
 		}
 		log.Printf("发送Send message to %s\r\n", c.KeyNet)
@@ -188,7 +187,7 @@ func (c *ClientWS) SendMsgLink() (_err error) {
 	log.Printf("开始 Send : %s\r\n", c.KeyNet)
 	for message := range c.MsgLink {
 		if _err = c.Link.WriteMessage(websocket.TextMessage, message); _err != nil {
-			log.Printf("WriteMessage 错误\r\n", zap.Error(_err))
+			log.Printf("WriteMessage 错误: %v\r\n", _err)
 			return
 		}
 		log.Printf("Send message to %s\r\n", c.KeyNet)

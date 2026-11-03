@@ -2,7 +2,6 @@ package emailx
 
 import (
 	"fmt"
-	"log"
 	"net"
 	"net/smtp"
 
@@ -42,12 +41,12 @@ func (t *Email) SendEmail(mail Mail) (_err error) {
 	if len(mail.Text) != 0 {
 		e.Text = mail.Text
 	}
-	if len(mail.Text) != 0 {
+	if len(mail.HTML) != 0 {
 		e.HTML = mail.HTML
 	}
 	_err = e.Send(net.JoinHostPort(t.Host, t.Port), t.Auth)
 	if _err != nil {
-		log.Fatal("发送邮件失败：", _err)
+		_err = fmt.Errorf("发送邮件失败: %w", _err)
 	}
 	return
 }

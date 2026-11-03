@@ -10,15 +10,13 @@ import (
 // 因为snowFlake目的是解决分布式下生成唯一id 所以ID中是包含集群和节点编号在内的
 // JS 支持的最大数 999999999999999  15位
 // 129511438879297536
-// const (
-// 	numberBits uint8 = 15 // 表示每个集群下的每个节点，1毫秒内可生成的id序号的二进制位数 即每毫秒可生成 2^15-1=32768个唯一ID
-// 	numberMax int64 = -1 ^ (-1 << numberBits) // 同上，用来表示生成id序号的最大值
-// )
+// ID = 毫秒时间戳*100 + 序列号，因此每毫秒最多生成 100 个唯一ID
+const jsNumberMax int64 = 99
 
 type SnowFlakeJS struct {
 	mu        sync.Mutex // 添加互斥锁 确保并发安全
 	timestamp int64      // 记录时间戳
-	number    int64      // 当前毫秒已经生成的id序列号(从0开始累加) 1毫秒内最多生成4096个ID
+	number    int64      // 当前毫秒已经生成的id序列号(从0开始累加) 1毫秒内最多生成100个ID
 }
 
 func NewSnowFlakeJS() *SnowFlakeJS {
@@ -38,7 +36,7 @@ func (t *SnowFlakeJS) GetId() int64 {
 	if t.timestamp == now {
 		t.number++
 		// 这里要判断，当前工作节点是否在1毫秒内已经生成numberMax个ID
-		if t.number > numberMax {
+		if t.number > jsNumberMax {
 			// 如果当前工作节点在1毫秒内生成的ID已经超过上限 需要等待1毫秒再继续生成
 			for now <= t.timestamp {
 				now = time.Now().UnixMilli()

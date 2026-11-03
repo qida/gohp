@@ -1,195 +1,67 @@
 # logx
 
-基于 [zap](https://github.com/uber-go/zap) 封装的日志包，支持控制台、文件、钉钉、邮件、Kafka、RocketMQ 多种输出目标。
+基于 zap 封装的日志包，支持控制台、文件、钉钉、邮件、Kafka、RocketMQ 多种输出目标。
 
-## 特性
+## 功能列表
 
-- 包级函数直接调用：`logx.Info`、`logx.Infof`、`logx.Errorf` 等，无需持有实例
-- `init()` 默认创建一个 Info 级别的控制台 logger，未调用 `Init` 也能安全使用
-- 通过 `Init` 按配置切换输出目标与级别
-- 文件模式基于 lumberjack，支持按大小切割、按份数/天数清理、gzip 压缩
-- 钉钉/邮件/Kafka/RocketMQ 作为日志落地目标
+### logx.go — 核心封装
+- `Loger`：日志器，内嵌 `*zap.Logger`；`Level` 与 `LevelDebug`~`LevelPanic` 级别常量
+- `Config`（含 `DingdingConfig`/`MailConfig`/`KafkaConfig`/`RocketMQConfig`）：日志配置，`mode` 可选 console/file/dingding/mail/kafka/rocketmq，其他值时同时输出控制台+文件
+- `DefaultWithMap(cfg *Config) error`：按配置初始化全局日志（未初始化时默认 Info 级控制台输出）
+- `GetLoger() *Loger`：获取全局日志实例
+- `Debug/Info/Error/Panic/Fatal/DPanic` 及 `f`/`ln` 后缀变体：包级日志函数
 
-## 初始化
+### dingtalk.go — 钉钉机器人
+- `Robot` / `NewRobot(token, secret)`：钉钉群机器人，支持加签
+- `SendMessage(msg)`：发送任意消息体；`SendTextMessage`/`SendMarkdownMessage`/`SendLinkMessage`：发送 text/markdown/link 消息
+
+### dingding.go — 钉钉日志 writer
+- `LogDingding`：实现 `io.Writer`，把 zap 日志格式化为钉钉 markdown 消息发送（复用 dingtalk.go 的 `Robot`）
+
+### mail.go — 邮件日志 writer
+- `Mail`：实现 `io.Writer`，通过 gomail 异步发送日志邮件
+
+### kafka.go — Kafka 日志 writer
+- `LogKafka`：实现 `io.Writer`，通过 sarama 同步生产者把日志写入 Kafka
+
+### rocketmq.go / rocket.go / rocket_mq.go — RocketMQ 日志
+- `LogRocketmq`：实现 `io.Writer`，通过官方客户端同步发送日志
+- `LogRocket` / `NewProbeLog(m map[string]interface{})`：数据探针日志，`MQDebug/MQInfo/MQWarn/MQError/MQPanic` 分级发送、`SetTagKey` 设置 Tag/Key（异步发送，复用 mqtt/rocketmq 的 MqProducer）
+- `NewRocketMQCore(enc, topic, producer, enabler) zapcore.Core`：自定义 zap Core，将日志写入 RocketMQ
+
+### gorm.go — GORM 适配
+- `GormLogger` / `NewGormLogger(l, cfg)`：把 zap 日志适配为 gorm `logger.Interface`，支持慢查询告警、可忽略 record not found
+
+### file.go — 文件日志
+- `FileLogger`：lumberjack 文件日志配置（大小/份数/天数/压缩），内置 cron 每日轮转
+
+### log_MQ_type.go — MQ 日志结构
+- `LogHeader`/`LogBody`/`LogQuery`/`Base`/`LogStatistic`/`LogField`：日志采集与查询数据结构
+- `LogAny(key, val)`：构造 `LogField`
+
+## 使用示例
 
 ```go
+package main
+
 import "github.com/qida/gohp/logx"
 
-// 通常在程序启动时调用一次，传入从配置文件解析出的 *logx.Config
-if err := logx.Init(&cfg.Loger); err != nil {
-    panic(err)
+func main() {
+    err := logx.DefaultWithMap(&logx.Config{
+        Mode:     "file",
+        Level:    "info",
+        Filename: "logs/app.log",
+        MaxSize:  100, MaxBackups: 3, MaxAge: 7, Compress: true,
+    })
+    if err != nil {
+        panic(err)
+    }
+    logx.Infof("服务启动 addr=%s", ":8080")
 }
-
-// 也可以拿到底层 *Loger（内嵌 *zap.Logger）做进一步定制
-l := logx.GetLoger()
-```
-
-## 日志输出
-
-```go
-logx.Debug("调试信息")
-logx.Info("启动成功", zap.String("addr", addr))
-logx.Errorf("请求失败: %v", err)
-logx.Infof("Swagger文档地址: http://localhost%s%s", addr, "/swagger")
-logx.Fatal("致命错误", zap.Error(err))
-```
-
-可用包级函数（与 zap 风格一致）：
-
-| 类型 | 函数 |
-| --- | --- |
-| `args ...any` | `Debug` `Info` `Error` `Panic` `Fatal` `DPanic` |
-| `format` 格式化 | `Debugf` `Infof` `Errorf` `Panicf` `Fatalf` `DPanicf` |
-| `ln` 换行 | `Debugln` `Infoln` `Errorln` `Panicln` `Fatalln` `DPanicln` |
-
-## 配置项
-
-`Config` 结构对应 yaml 中的 `loger` 节点：
-
-| 字段 | 类型 | 说明 |
-| --- | --- | --- |
-| `mode` | string | 输出模式，见下表 |
-| `level` | string | 日志级别：`debug` `info` `warn` `error` `fatal`，非法值回退为 `info` |
-| `filename` | string | 文件路径（`file` / 默认模式使用） |
-| `max_size` | int | 单文件最大大小，单位 MB（文件切割） |
-| `max_backups` | int | 最大保留旧文件份数 |
-| `max_age` | int | 最大保留天数 |
-| `compress` | bool | 是否 gzip 压缩旧文件 |
-| `dingding` | object | 钉钉配置，见下 |
-| `mail` | object | 邮件配置，见下 |
-| `kafka` | object | Kafka 配置，见下 |
-| `rocketmq` | object | RocketMQ 配置，见下 |
-
-`mode` 取值：
-
-| mode | 输出目标 | 说明 |
-| --- | --- | --- |
-| `console` | 控制台 | 仅 stdout |
-| `file` | 文件 | 仅落盘，按 `filename`/`max_size` 等切割 |
-| `dingding` | 钉钉群机器人 | 每条日志发送一条钉钉消息 |
-| `mail` | 邮件 | 每条日志发送一封邮件 |
-| `kafka` | Kafka | 每条日志作为消息写入指定 topic |
-| `rocketmq` | RocketMQ | 每条日志作为消息写入指定 topic |
-| 其他/留空 | 文件 + 控制台 | 同时落盘与输出到 stdout |
-
-子配置字段：
-
-```yaml
-dingding:
-  secret: ""          # 钉钉机器人加签密钥
-  access_token: ""    # 机器人 access_token
-
-mail:
-  from: ""            # 发件人邮箱
-  to: ""              # 收件人邮箱
-  subject: ""         # 邮件主题
-  smtp: ""            # SMTP 服务器地址
-  port: 465           # SMTP 端口
-  password: ""        # 发件人邮箱密码/授权码
-
-kafka:
-  topic: ""           # 目标 topic
-  address: []         # Kafka broker 地址列表
-
-rocketmq:
-  topic: ""           # 目标 topic
-  name_server: []     # NameServer 地址列表
-  group: ""           # 生产者 group
-```
-
-## 配置示例
-
-### 控制台输出（开发环境常用）
-
-```yaml
-loger:
-  mode: "console"
-  level: "debug"
-```
-
-### 文件输出
-
-```yaml
-loger:
-  mode: "file"
-  level: "info"
-  filename: "logs/app.log"
-  max_size: 100        # 单文件 100MB
-  max_backups: 3       # 保留 3 份历史
-  max_age: 7           # 保留 7 天
-  compress: true       # 历史文件 gzip 压缩
-```
-
-### 文件 + 控制台（默认模式，生产环境推荐）
-
-`mode` 留空或设为未识别值时，日志同时写入文件与控制台：
-
-```yaml
-loger:
-  mode: ""
-  level: "info"
-  filename: "logs/app.log"
-  max_size: 100
-  max_backups: 3
-  max_age: 7
-  compress: true
-```
-
-### 钉钉告警
-
-适合把 `error` 及以上级别的日志推送到钉钉群：
-
-```yaml
-loger:
-  mode: "dingding"
-  level: "error"
-  dingding:
-    secret: "SECxxxxxxxxxxxxxxxx"
-    access_token: "xxxxxxxxxxxxxxxx"
-```
-
-### 邮件告警
-
-```yaml
-loger:
-  mode: "mail"
-  level: "error"
-  mail:
-    from: "alert@xx.com"
-    to: "ops@xx.com"
-    subject: "系统告警"
-    smtp: "smtp.xx.com"
-    port: 465
-    password: "********"
-```
-
-### Kafka
-
-```yaml
-loger:
-  mode: "kafka"
-  level: "info"
-  kafka:
-    topic: "app_log"
-    address:
-      - "127.0.0.1:9092"
-```
-
-### RocketMQ
-
-```yaml
-loger:
-  mode: "rocketmq"
-  level: "info"
-  rocketmq:
-    topic: "app_log"
-    name_server:
-      - "127.0.0.1:9876"
-    group: "log_producer"
 ```
 
 ## 备注
 
-- `dingding` / `mail` / `kafka` / `rocketmq` 为单目标输出，不会同时落盘。若需同时保留本地文件，请使用默认模式（`mode` 留空），或在外层用 `zapcore.NewTee` 自行组合
-- `mail` 模式每条日志都会发邮件，高频日志可能造成邮件轰炸，建议配合较高的 `level`（如 `error`）使用
-- 钉钉/邮件的发送为异步或同步由各 writer 实现决定，详见 `dingding.go` / `mail.go` / `kafka.go` / `rocketmq.go`
+- 外部依赖：zap、lumberjack、sarama(IBM)、rocketmq-client-go、gomail、robfig/cron、gorm、goccy/go-json、spf13/cast、pkg/errors，以及本仓库 `mqtt/rocketmq`、`slice` 包
+- dingding 模式需可访问钉钉 OpenAPI，mail 模式需可访问 SMTP 服务器，kafka/rocketmq 模式需对应集群可用
+- mail 每条日志发一封邮件，建议配合较高 `level`（如 error）使用

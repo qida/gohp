@@ -115,7 +115,7 @@ func BenchmarkColorLogS(b *testing.B) {
 			" highlight # %s #, error [ %s ].",
 		"path to somewhere", "highlighted content", "tesing error")
 	for i := 0; i < b.N; i++ {
-		ColorLogS(log)
+		ColorLogS("%s", log)
 	}
 }
 

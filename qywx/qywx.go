@@ -71,6 +71,10 @@ func NewQywx(corpid string, corpsecret string) (qy *QYWX, _err error) {
 		fmt.Printf("获取token出错：%+v\r\n", _err)
 		return
 	}
+	if msgAccessToken.Errcode != 0 {
+		_err = fmt.Errorf("获取token出错: errcode=%d, errmsg=%s", msgAccessToken.Errcode, msgAccessToken.Errmsg)
+		return
+	}
 	qy = &QYWX{
 		AccessToken: msgAccessToken.AccessToken,
 		TimeExpires: time.Now().Add(7200),
@@ -82,7 +86,11 @@ func NewQywx(corpid string, corpsecret string) (qy *QYWX, _err error) {
 
 func (q *QYWX) GetAccessToken() string {
 	if time.Since(q.TimeExpires).Seconds() > 0 {
-		q, _ = NewQywx(q.CorpId, q.CorpSecret)
+		// token 过期后重新获取，并更新到当前对象缓存
+		if nq, err := NewQywx(q.CorpId, q.CorpSecret); err == nil {
+			q.AccessToken = nq.AccessToken
+			q.TimeExpires = nq.TimeExpires
+		}
 	}
 	return q.AccessToken
 }

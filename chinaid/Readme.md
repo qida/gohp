@@ -1,76 +1,49 @@
-# CHINA ID(中国大陆身份证)
+# chinaid
 
-[![Build Status](https://travis-ci.org/sleagon/chinaid.svg?branch=master)](https://travis-ci.org/sleagon/chinaid)  [![Go Report Card](https://goreportcard.com/badge/github.com/sleagon/chinaid)](https://goreportcard.com/report/github.com/sleagon/chinaid)  [![GoDoc](https://godoc.org/github.com/jinzhu/gorm?status.svg)](https://godoc.org/github.com/sleagon/chinaid)  [![MIT license](https://img.shields.io/badge/license-MIT-brightgreen.svg)](https://opensource.org/licenses/MIT)
+中国居民身份证号工具包：校验 18 位身份证号合法性，并解析出性别、年龄、生日与省市区三级行政区划信息。
 
+导入：`import "github.com/qida/gohp/chinaid"`
 
-> 校验、解析中国大陆身份证号
+## 功能列表
 
-## 身份证号校验
+### id.go — 校验与解析
+- `IDCard`：身份证号类型（底层为 string）
+- `(IDCard).Valid()`：判断身份证号是否合法（长度、字符及末位校验码加权求和校验）
+- `(IDCard).Decode()`：根据身份证号解析出具体信息，返回 `IDCardDetail`
+- `IDCardDetail`：解析结果结构，含 `Sex`（性别）、`Age`（年龄）、`Birthday`（生日）、`Addr`（地址）
+- `Addr`：地址信息（`Code` 行政区划码 / `Province` 省 / `City` 市 / `District` 区县），`InitAddr(code)` 按区划码初始化，无法识别时置为 "未知"
+- 常量：`Male`（男，1）、`Female`（女，2）、`IDCardLength`（18）
+- 错误：`ErrInvalidIDCardNo`（身份证号不合法）
+
+### id_map.go — 行政区划数据
+- `cityMap`：行政区划码到名称的映射表（数据来自民政部 www.mca.gov.cn，文件头部注明勿手动编辑）
+
+### id_test.go / id_benchmark.go — 测试
+- `TestIDNum`：解析正确性测试（校验省市区、生日、性别）
+- `BenchmarkIDNum`：解析性能基准测试
+
+## 使用示例
 
 ```go
 package main
+
 import (
-    "log"
-    "github.com/sleagon/chinaid"
+	"fmt"
+
+	"github.com/qida/gohp/chinaid"
 )
 
 func main() {
-    id := chinaid.IDCard("420683199006041237")
-    result := id.Valid()
-    log.Println(">>>>", result)
+	detail, err := chinaid.IDCard("341302199006041233").Decode()
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println(detail.Province, detail.City, detail.District) // 安徽省 宿州市 埇桥区
+	fmt.Println(detail.Sex)      // 1（Male）
+	fmt.Println(detail.Birthday) // 1990-06-04 ...
 }
 ```
 
-
-## 身份证信息解析
-
-```go
-package main
-import (
-    "log"
-    "github.com/sleagon/chinaid"
-)
-
-func main() {
-    id := chinaid.IDCard("420683199006041237")
-    result, err := id.Decode()
-    if err != nil {
-        log.Println("非法身份证号")
-        return
-    }
-    log.Println(">>>>", result)
-}
-```
-
-## 结果示例
-
-```json
-{
-    "sex":       1,
-    "code":      420683,
-    "district":  "枣阳市",
-    "city":      "襄阳市",
-    "province":  "湖北省",
-    "birthday":  "1990-06-04T00:00:00Z"
-}
-```
-
-## 地域映射
-
-身份证里的地域码往地域转换的映射表来自[中华人民共和国民政部][1]官网，本项目里目前用的版本是2019年4月更新的[版本](http://www.mca.gov.cn/article/sj/xzqh/2019/201901-06/201905271021.html)，后续会不定期更新。
-
-## 依赖示例
-
-```bash
-go get github.com/sleagon/chinaid
-```
-
-> dep
-
-```yml
-[[constraint]]
-   name = "github.com/sleagon/chinaid"
-   version = "0.3"
-```
-
-[1]: http://www.mca.gov.cn/
+## 备注
+- 年龄按「当前年份 − 出生年份」计算，未按生日精确折算。
+- 校验码支持小写 `x` 与大写 `X`。

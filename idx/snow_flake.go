@@ -2,7 +2,6 @@ package idx
 
 import (
 	"errors"
-	"fmt"
 	"sync"
 	"time"
 )
@@ -65,6 +64,8 @@ func (w *SnowFlake) GetId() int64 {
 			for now <= w.timestamp {
 				now = time.Now().UnixNano() / 1e6
 			}
+			w.timestamp = now // 更新时间戳为新的毫秒数
+			w.number = 0      // 重置序列号，避免溢出到 workerId 位
 		}
 	} else {
 		// 如果当前时间与工作节点上一次生成ID的时间不一致 则需要重置工作节点生成ID的序号
@@ -75,6 +76,5 @@ func (w *SnowFlake) GetId() int64 {
 	// 第一段 now - epoch 为该算法目前已经奔跑了xxx毫秒
 	// 如果在程序跑了一段时间修改了epoch这个值 可能会导致生成相同的ID
 	ID := int64((now-epoch)<<timeShift | (w.workerId << workerShift) | (w.number))
-	fmt.Printf("SnowID: %d\r\n", ID)
 	return ID
 }

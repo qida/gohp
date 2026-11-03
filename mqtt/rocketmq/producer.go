@@ -110,7 +110,8 @@ func (mq *MqProducer) SendAsyncMessage(msg *MQMessage, callback func(ctx context
 	//fmt.Println("body  发送异步消息后回调 ========>:", string(msg.Body))
 	e := mq.producer.SendAsync(context.Background(), callback, msg.toMessage())
 	if e != nil {
-		ctx, _ := context.WithTimeout(context.Background(), 3*time.Second)
+		ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+		defer cancel()
 		callback(ctx, nil, fmt.Errorf("mqproducer send async message error: %w", e))
 		fmt.Printf("mqproducer send async message error:%s\n", e)
 		return false, e

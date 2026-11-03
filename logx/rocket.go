@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"io"
 	"path/filepath"
 	"runtime"
 	"strings"
@@ -27,16 +26,11 @@ type LogRocketMQ struct {
 }
 
 func (l *LogRocketMQ) Write(p []byte) (int, error) {
-	var err error
-
-	//fmt.Println("Body1 ======>:", string(p))
-
 	MqMsg := rocketmq.NewMQMessage(l.Topic, "logs", "logger", p, 0)
-	_, err = l.producer.SendAsyncMessage(MqMsg, func(ctx context.Context, result *primitive.SendResult, e error) {
+	_, err := l.producer.SendAsyncMessage(MqMsg, func(ctx context.Context, result *primitive.SendResult, e error) {
 		if e != nil {
+			// 异步回调只记录错误，不回写外部变量（避免数据竞争）
 			fmt.Println("MQ 异步发送消息 err: ", e)
-			err = e
-			return
 		}
 	})
 
@@ -44,16 +38,6 @@ func (l *LogRocketMQ) Write(p []byte) (int, error) {
 		return 0, err
 	}
 	return len(p), nil
-}
-
-func getRocketMQWriter(topic string, group string, SrvAddr []string, fields ...zap.Field) (io.Writer, error) {
-	lr := &LogRocketMQ{
-		Topic:  topic,
-		Group:  group,
-		fields: fields,
-	}
-	lr.producer = rocketmq.NewMQProducer(topic, group, SrvAddr)
-	return lr, nil
 }
 
 /*************************初始化MQ***************************/

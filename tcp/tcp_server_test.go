@@ -1,11 +1,9 @@
 package tcp
 
 import (
-	"fmt"
 	"net"
 	"testing"
 	"time"
-	// . "github.com/smartystreets/goconvey/convey"
 )
 
 func buildTestServer() *server {
@@ -15,48 +13,55 @@ func buildTestServer() *server {
 func Test_accepting_new_client_callback(t *testing.T) {
 	server := buildTestServer()
 
-	// var messageReceived bool
-	// var messageText string
-	// var newClient bool
-	// var connectinClosed bool
+	newClient := make(chan struct{}, 1)
+	messageReceived := make(chan string, 1)
+	connectionClosed := make(chan struct{}, 1)
 
 	server.OnNewClient(func(c *Client) {
-		// newClient = true
+		newClient <- struct{}{}
 	})
 	server.OnNewMessage(func(c *Client, message string) {
-		// messageReceived = true
-		// messageText = message
-		fmt.Println("receive:", message)
+		messageReceived <- message
 	})
 	server.OnClientConnectionClosed(func(c *Client, err error) {
-		// connectinClosed = true
+		connectionClosed <- struct{}{}
 	})
-	server.Listen()
 
-	// Wait for server
-	// If test fails - increase this value
-	time.Sleep(10 * time.Millisecond)
+	// Listen 会阻塞，需在 goroutine 中启动
+	go server.Listen()
+
+	// 等待服务器启动
+	time.Sleep(100 * time.Millisecond)
 
 	conn, err := net.Dial("tcp", "localhost:9999")
 	if err != nil {
 		t.Fatal("Failed to connect to test server")
 	}
-	conn.Write([]byte("Test message\n"))
+	if _, err := conn.Write([]byte("Test message\n")); err != nil {
+		t.Fatalf("Failed to write: %v", err)
+	}
 	conn.Close()
 
-	// Wait for server
-	time.Sleep(10 * time.Millisecond)
+	const timeout = 2 * time.Second
 
-	// Convey("Messages should be equal", t, func() {
-	// 	So(messageText, ShouldEqual, "Test message\n")
-	// })
-	// Convey("It should receive new client callback", t, func() {
-	// 	So(newClient, ShouldEqual, true)
-	// })
-	// Convey("It should receive message callback", t, func() {
-	// 	So(messageReceived, ShouldEqual, true)
-	// })
-	// Convey("It should receive connection closed callback", t, func() {
-	// 	So(connectinClosed, ShouldEqual, true)
-	// })
+	select {
+	case <-newClient:
+	case <-time.After(timeout):
+		t.Fatal("超时：未收到新客户端回调")
+	}
+
+	select {
+	case msg := <-messageReceived:
+		if msg != "Test message\n" {
+			t.Errorf("收到消息 = %q, want %q", msg, "Test message\n")
+		}
+	case <-time.After(timeout):
+		t.Fatal("超时：未收到消息回调")
+	}
+
+	select {
+	case <-connectionClosed:
+	case <-time.After(timeout):
+		t.Fatal("超时：未收到连接关闭回调")
+	}
 }

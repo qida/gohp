@@ -125,24 +125,11 @@ func (a argInt) Get(i int, args ...int) (r int) {
 
 // HexStr2int converts hex format string to decimal number.
 func HexStr2int(hexStr string) (int, error) {
-	num := 0
-	// length := len(hexStr)
-	// for i := 0; i < length; i++ {
-	// 	char := hexStr[length-i-1]
-	// 	factor := -1
-
-	// 	switch {
-	// 	case char >= '0' && char <= '9':
-	// 		factor = int(char) - '0'
-	// 	case char >= 'a' && char <= 'f':
-	// 		factor = int(char) - 'a' + 10
-	// 	default:
-	// 		return -1, fmt.Errorf("invalid hex: %s", string(char))
-	// 	}
-
-	// 	num += factor * PowInt(16, i)
-	// }
-	return num, nil
+	v, err := strconv.ParseInt(hexStr, 16, 64)
+	if err != nil {
+		return 0, fmt.Errorf("invalid hex: %s", hexStr)
+	}
+	return int(v), nil
 }
 
 // Int2HexStr converts decimal number to hex format string.

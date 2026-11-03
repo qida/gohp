@@ -1,39 +1,17 @@
 package iox
 
 import (
-	"reflect"
 	"testing"
 )
 
 func TestWalkDir(t *testing.T) {
-	type args struct {
-		dirPth string
-		suffix []string
+	// 遍历当前目录下的 .go 文件，应至少能找到本测试文件
+	gotFiles, err := WalkDir("./", []string{".go"})
+	if err != nil {
+		t.Errorf("WalkDir() error = %v, wantErr %v", err, false)
+		return
 	}
-	tests := []struct {
-		name       string
-		args       args
-		want_files []string
-		wantErr    bool
-	}{
-		{
-			name: "test1",
-			args: args{
-				dirPth: "./",
-				suffix: []string{".go"},
-			},
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			got_files, err := WalkDir(tt.args.dirPth, tt.args.suffix)
-			if (err != nil) != tt.wantErr {
-				t.Errorf("WalkDir() error = %v, wantErr %v", err, tt.wantErr)
-				return
-			}
-			if !reflect.DeepEqual(got_files, tt.want_files) {
-				t.Errorf("WalkDir() = %v, want %v", got_files, tt.want_files)
-			}
-		})
+	if len(gotFiles) == 0 {
+		t.Errorf("WalkDir() 返回空列表, want 至少包含 1 个 .go 文件")
 	}
 }

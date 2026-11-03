@@ -1,52 +1,30 @@
 package logx
 
 import (
-	"bytes"
-	"crypto/hmac"
-	"crypto/sha256"
-	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"io"
-	"net/http"
-	"net/url"
-	"strconv"
-	"time"
 
 	"go.uber.org/zap"
 )
 
 // LogDingding .
 type LogDingding struct {
-	secret       string
-	access_token string
-	level        *Level
-	fields       []zap.Field
+	robot  *Robot
+	level  *Level
+	fields []zap.Field
 }
 
-var dingurl = "https://oapi.dingtalk.com/robot/send"
-
 // Write 实现io.Writer
-// 发送给钉钉群
+// 将 zap 日志内容格式化为钉钉消息并发送到钉钉群（复用 dingtalk.go 中的 Robot）
 func (ld *LogDingding) Write(p []byte) (int, error) {
-	ts := time.Now().UnixNano() / 1e6
-	string_to_sign := fmt.Sprintf("%d\n%s", ts, ld.secret)
-
-	h := hmac.New(sha256.New, []byte(ld.secret))
-
-	_, _ = h.Write([]byte(string_to_sign))
-
-	sign := base64.StdEncoding.EncodeToString(h.Sum(nil))
-	var m map[string]interface{}
 	var msg map[string]interface{}
-	err := json.Unmarshal(p, &msg)
-
-	if err == nil {
+	if err := json.Unmarshal(p, &msg); err == nil {
 		var fields string
 		for _, f := range ld.fields {
 			fields += fmt.Sprintf("\r\n###### %s: %s\r\n", f.Key, f.String)
 		}
-		m = map[string]interface{}{
+		msg = map[string]interface{}{
 			"msgtype": "markdown",
 			"markdown": map[string]string{
 				"title": fmt.Sprintf("%s: %s", msg["level"], msg["file"]),
@@ -66,7 +44,7 @@ func (ld *LogDingding) Write(p []byte) (int, error) {
 			},
 		}
 	} else {
-		m = map[string]interface{}{
+		msg = map[string]interface{}{
 			"msgtype": "text",
 			"text": map[string]string{
 				"content": string(p),
@@ -74,25 +52,15 @@ func (ld *LogDingding) Write(p []byte) (int, error) {
 		}
 	}
 
-	byt, _ := json.Marshal(m)
-	params := url.Values{}
-	params.Add("access_token", ld.access_token)
-	params.Add("timestamp", strconv.FormatInt(ts, 10))
-	params.Add("sign", sign)
-	resp, err := http.Post(dingurl+"?"+params.Encode(), "application/json", bytes.NewReader(byt))
-	if err != nil {
-		return 0, nil
+	if err := ld.robot.SendMessage(msg); err != nil {
+		return 0, err
 	}
-	defer resp.Body.Close()
-
-	// _, _ = io.ReadAll(resp.Body)
-	return 0, nil
+	return len(p), nil
 }
 
 func getDingdingWriter(secret, access_token string, fields ...zap.Field) (io.Writer, error) {
 	return &LogDingding{
-		secret:       secret,
-		access_token: access_token,
-		fields:       fields,
+		robot:  NewRobot(access_token, secret),
+		fields: fields,
 	}, nil
 }
